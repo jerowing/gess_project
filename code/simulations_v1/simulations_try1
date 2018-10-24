@@ -1,0 +1,74 @@
+###Notation Kommentare
+#?: Frage an die Anderen
+#S: nützlicher Syntax, um nachzuschauen oder für andere User dokumentiert
+#T: task / To Do
+#K: Kommentar
+from tkinter import *
+import random
+import time
+#K: Inspiration zu grossen Teilen aus der Playlist:
+# https://www.youtube.com/watch?v=lc8NNJgeVjI&index=12&list=PLsk-HSGFjnaGe7sS_4VpZoEtZF2VoWtoR
+
+#K: globale Variabeln deklarieren
+#K: width und height initialisieren, damit danach grösse des Fensters automatisch angepasst wird.
+WIDTH = 1200
+HEIGHT = 800
+
+#K: öffnet neues Fenster mit der Grösse width x height Pixles
+tk = Tk()
+canvas = Canvas(tk, width=WIDTH, height=HEIGHT)
+tk.title("simulation_try1")
+canvas.pack()
+
+class Ball:
+    def __init__(self, color, cord):
+        #K: Initialisiert ein Objekt der Klasse Ball
+        self.shape = canvas.create_rectangle(cord, cord, (cord + 30), (cord + 30), fill=color)
+        #K: Geschwindigkeiten werden zufällig verteilt
+        #K: je grösser das Zufallsintervall ist, desto kleiner die Chance, dass zwei Objekte genau übereinanderliegen
+        self.xspeed = random.randint(2,7)
+        self.yspeed = random.randint(2,7)
+        self.coords = canvas.coords(self.shape)
+
+    def move(self):
+        #K: Bewegt ein Objekt, so dass es das Fenster nicht verlässt
+        canvas.move(self.shape, self.xspeed, self.yspeed)
+        pos = canvas.coords(self.shape)
+
+        if pos[3] >= HEIGHT or pos[1] <= 0:
+            self.yspeed = -self.yspeed
+        if pos[2] >= WIDTH or pos[0] <= 0:
+            self.xspeed = -self.xspeed
+
+    #TODO: Funktion, welche Richtung wechselt sobald zwei Objekte crashen
+    # Meine Idee (Jérôme): Array erstellen und Koordinaten eintragen, welche besetzt sind
+    # so muss nicht jedes Objekt mit allen anderen Objekten abgeglichen werden.
+    #TODO: Funktion, welche einem Objekt ein Ziel mitgibt und Objekt so steuert, dass es sich richtung Zielkoordinaten bewegt
+    # Problem: Wie definieren wir Koordinaten eines Objektes? (Momentan ist Objekt über 4 "Randpunkte" definiert
+    # Meine Idee (Jérôme): Erste Version -> anhalten sobald Zielkoordinaten erreicht
+    # Später: gezielt richtung Ziel bewegen
+
+
+
+balls = []
+
+i = 1
+while i < 10:
+    #Füllt n*3 Bälle in Liste
+    #K: Aufpassen, dass alle Objekte innerhalb des Fensters initialisiert werden
+    #K: startkoordinaten so verteilt, dass sie "zufällig" im Raum verteilt sind zu beginn
+    #S: Ball(farbe, startkoordinaten)
+    balls.append(Ball("green", 20 * i))
+    balls.append(Ball("red", HEIGHT - 70 * i))
+    balls.append(Ball("blue", 70 * i))
+    i+=1
+
+while True:
+    #K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
+    for ball in balls:
+        ball.move()
+
+    tk.update()
+    time.sleep(0.01)
+
+tk.mainloop
