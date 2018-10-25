@@ -1,8 +1,3 @@
-###Notation Kommentare
-#?: Frage an die Anderen
-#S: nützlicher Syntax, um nachzuschauen oder für andere User dokumentiert
-#T: task / To Do
-#K: Kommentar
 from tkinter import *
 import random
 import time
@@ -10,9 +5,10 @@ import time
 # https://www.youtube.com/watch?v=lc8NNJgeVjI&index=12&list=PLsk-HSGFjnaGe7sS_4VpZoEtZF2VoWtoR
 
 #K: globale Variabeln deklarieren
-#K: width und height initialisieren, damit danach grösse des Fensters automatisch angepasst wird.
+#K: width, height und size hier initialisieren, damit sie später von überall aufgerufen werden können.
 WIDTH = 1200
 HEIGHT = 800
+size = 20
 
 #K: öffnet neues Fenster mit der Grösse width x height Pixles
 tk = Tk()
@@ -20,55 +16,76 @@ canvas = Canvas(tk, width=WIDTH, height=HEIGHT)
 tk.title("simulation_try1")
 canvas.pack()
 
+#TODO: Funktion, welche Richtung wechselt sobald zwei Objekte crashen
+# Meine Idee (Jérôme): Array erstellen und Koordinaten eintragen, welche besetzt sind
+# so muss nicht jedes Objekt mit allen anderen Objekten abgeglichen werden.
+
+# TODO: Funktion, welche einem Objekt ein Ziel mitgibt und Objekt so steuert, dass es sich richtung Zielkoordinaten bewegt
+# Problem: Wie definieren wir Koordinaten eines Objektes? (Momentan ist Objekt über 4 "Randpunkte" definiert
+# Meine Idee (Jérôme): Erste Version -> anhalten sobald Zielkoordinaten erreicht
+# Später: gezielt richtung Ziel bewegen
+
+def initialize_gitter():
+    #Initialisiert eine Matrix mit ran
+    matrix =[[0 for x in range(HEIGHT)] for y in range(WIDTH)]
+    return matrix
+
+def print_matrix(matrix):
+    #K: Funktioniert nur für Matrizen mit Höhe height
+    #K: Grenze so anpassen, dass bprinteliebige Matrizen verwendet werden können?
+    print("Matrixprinter")
+    #print("width ", len(matrix[0]), "height ", len(matrix))
+    for i in range(len(matrix)):
+        print(matrix[i])
+
 class Ball:
     def __init__(self, color, cord):
-        #K: Initialisiert ein Objekt der Klasse Ball
-        self.shape = canvas.create_rectangle(cord, cord, (cord + 30), (cord + 30), fill=color)
+        #K: Initialisiert ein Objekt der Klasse
+        cord = random.randint(size,min(HEIGHT, WIDTH) - size)
+        #s: create rectangle (x1, y1, x2, y2)
+        self.shape = canvas.create_rectangle(cord, cord, (cord + size), (cord + size), fill=color)
         #K: Geschwindigkeiten werden zufällig verteilt
         #K: je grösser das Zufallsintervall ist, desto kleiner die Chance, dass zwei Objekte genau übereinanderliegen
-        self.xspeed = random.randint(2,7)
-        self.yspeed = random.randint(2,7)
-        self.coords = canvas.coords(self.shape)
+        self.xspeed = random.randint(-10,10)
+        self.yspeed = random.randint(-10,10)
 
-    def move(self):
-        #K: Bewegt ein Objekt, so dass es das Fenster nicht verlässt
+    def move(self, matrix):
+        # K: Bewegt ein Objekt, so dass er sich +/- im Fenster bewegt
         canvas.move(self.shape, self.xspeed, self.yspeed)
         pos = canvas.coords(self.shape)
+        #K: Mittlere x- bzw. Y-Koordinaten
+        x = int(((pos[0] + pos[2])) / 2)
+        y = int(((pos[1]) + pos[3]) / 2)
+        if (x >= WIDTH) or (x <= 0) or (y >= HEIGHT) or (y <= 0):
+            #Ist es möglich, dass Bälle den Rahmen verlassen?
+            outofrange = 1
+        else:
+            matrix[x][y] += 1
+            return matrix
 
-        if pos[3] >= HEIGHT or pos[1] <= 0:
+        if y >= (HEIGHT) or y <= 0:
             self.yspeed = -self.yspeed
-        if pos[2] >= WIDTH or pos[0] <= 0:
+        if x >= (WIDTH) or x <= 0:
             self.xspeed = -self.xspeed
 
-    #TODO: Funktion, welche Richtung wechselt sobald zwei Objekte crashen
-    # Meine Idee (Jérôme): Array erstellen und Koordinaten eintragen, welche besetzt sind
-    # so muss nicht jedes Objekt mit allen anderen Objekten abgeglichen werden.
-    #TODO: Funktion, welche einem Objekt ein Ziel mitgibt und Objekt so steuert, dass es sich richtung Zielkoordinaten bewegt
-    # Problem: Wie definieren wir Koordinaten eines Objektes? (Momentan ist Objekt über 4 "Randpunkte" definiert
-    # Meine Idee (Jérôme): Erste Version -> anhalten sobald Zielkoordinaten erreicht
-    # Später: gezielt richtung Ziel bewegen
-
-
-
 balls = []
-
-i = 1
-while i < 10:
+for i in range(1000):
     #Füllt n*3 Bälle in Liste
-    #K: Aufpassen, dass alle Objekte innerhalb des Fensters initialisiert werden
     #K: startkoordinaten so verteilt, dass sie "zufällig" im Raum verteilt sind zu beginn
     #S: Ball(farbe, startkoordinaten)
-    balls.append(Ball("green", 20 * i))
-    balls.append(Ball("red", HEIGHT - 70 * i))
-    balls.append(Ball("blue", 70 * i))
-    i+=1
+    minimum = random.randint(1,(min(HEIGHT, WIDTH)))
+    balls.append(Ball("green", minimum))
+    balls.append(Ball("red", (HEIGHT - minimum)))
+    balls.append(Ball("blue", WIDTH - minimum))
 
 while True:
     #K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
+    raster = initialize_gitter()
     for ball in balls:
-        ball.move()
-
+        ball.move(raster)
     tk.update()
     time.sleep(0.01)
+    print_matrix(raster)
+
 
 tk.mainloop
