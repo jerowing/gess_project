@@ -38,12 +38,13 @@ def print_matrix(matrix):
     for i in range(len(matrix)):
         print(matrix[i])
 
-class Ball:
+class Ball:    #print_matrix(raster
     def __init__(self, color, cord):
         #K: Initialisiert ein Objekt der Klasse
-        cord = random.randint(size,min(HEIGHT, WIDTH) - size)
+        cordx = random.randint(size, WIDTH) - size
+        cordy = random.randint(size, HEIGHT) - size
         #s: create rectangle (x1, y1, x2, y2)
-        self.shape = canvas.create_rectangle(cord, cord, (cord + size), (cord + size), fill=color)
+        self.shape = canvas.create_rectangle(cordx, cordy, (cordx + size), (cordy + size), fill=color)
         #K: Geschwindigkeiten werden zufällig verteilt
         #K: je grösser das Zufallsintervall ist, desto kleiner die Chance, dass zwei Objekte genau übereinanderliegen
         self.xspeed = random.randint(-10,10)
@@ -69,23 +70,26 @@ class Ball:
             self.xspeed = -self.xspeed
 
 balls = []
-for i in range(1000):
+for i in range(100):
     #Füllt n*3 Bälle in Liste
     #K: startkoordinaten so verteilt, dass sie "zufällig" im Raum verteilt sind zu beginn
     #S: Ball(farbe, startkoordinaten)
-    minimum = random.randint(1,(min(HEIGHT, WIDTH)))
-    balls.append(Ball("green", minimum))
-    balls.append(Ball("red", (HEIGHT - minimum)))
-    balls.append(Ball("blue", WIDTH - minimum))
+    balls.append(Ball("yellow", 0))
+    balls.append(Ball("orange", 0))
+    balls.append(Ball("red", 0))
+    balls.append(Ball("green", 0))
+    balls.append(Ball("black", 0))
 
 while True:
     #K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
+    balls.append(Ball("magenta", 100))
+    balls.append(Ball("blue", 100))
     raster = initialize_gitter()
     for ball in balls:
         ball.move(raster)
     tk.update()
     time.sleep(0.01)
-    print_matrix(raster)
+    #print_matrix(raster)
 
 
 tk.mainloop
