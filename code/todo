@@ -2,3 +2,4 @@ Hintergrundraster erstellen: "Heatmap" erstellen mit Kodierung, so dass gewisse 
 Visuelle umsetzung der Tannenbarkreuzung
 Klassen für verschiedene Agents erstellen: Tram, Auto, Fussgänger
 Agents programmieren: Agents so programmieren, dass sie Ziel suchen. Zusammenstösse zwischen agents.
+Zeitmessung für Stau implementieren --> wie lange wartet Auto?
