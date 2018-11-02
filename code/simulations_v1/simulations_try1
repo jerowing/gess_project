@@ -1,22 +1,29 @@
+# -*- coding: utf-8 -*-
 from tkinter import *
 import random
 import time
-#K: Inspiration zu grossen Teilen aus der Playlist:
+
+# K: Inspiration zu grossen Teilen aus der Playlist:
 # https://www.youtube.com/watch?v=lc8NNJgeVjI&index=12&list=PLsk-HSGFjnaGe7sS_4VpZoEtZF2VoWtoR
 
-#K: globale Variabeln deklarieren
-#K: width, height und size hier initialisieren, damit sie später von überall aufgerufen werden können.
-WIDTH = 1200
-HEIGHT = 800
-size = 20
+# K: globale Variabeln deklarieren
+# K: width, height und size hier initialisieren, damit sie später von überall aufgerufen werden können.
+WIDTH = 1000
+HEIGHT = 1000
+units = 50 # setzt Feinheit der Koordinaten fest
+size = WIDTH / units
 
-#K: öffnet neues Fenster mit der Grösse width x height Pixles
-tk = Tk()
-canvas = Canvas(tk, width=WIDTH, height=HEIGHT)
-tk.title("simulation_try1")
-canvas.pack()
 
-#TODO: Funktion, welche Richtung wechselt sobald zwei Objekte crashen
+# Malt Raster für Koordinatensystem (don't touch!!)
+def schachbrett(canvas):
+    count = units
+    for x in range(WIDTH):
+        canvas.create_line(WIDTH / count * x, 0, WIDTH / count * x, HEIGHT, fill="#476042")
+    for y in range(HEIGHT):
+        canvas.create_line(0, HEIGHT / count * y, WIDTH, HEIGHT / count * y, fill="#476042")
+
+
+# TODO: Funktion, welche Richtung wechselt sobald zwei Objekte crashen
 # Meine Idee (Jérôme): Array erstellen und Koordinaten eintragen, welche besetzt sind
 # so muss nicht jedes Objekt mit allen anderen Objekten abgeglichen werden.
 
@@ -26,70 +33,147 @@ canvas.pack()
 # Später: gezielt richtung Ziel bewegen
 
 def initialize_gitter():
-    #Initialisiert eine Matrix mit ran
-    matrix =[[0 for x in range(HEIGHT)] for y in range(WIDTH)]
+    # Initialisiert Koordinatenmatrix mit Nullen-Einträgen
+    matrix = [[0 for x in range(units)] for y in range(units)]
     return matrix
 
+
 def print_matrix(matrix):
-    #K: Funktioniert nur für Matrizen mit Höhe height
-    #K: Grenze so anpassen, dass bprinteliebige Matrizen verwendet werden können?
+    # K: Funktioniert nur für Matrizen mit Höhe height
+    # K: Grenze so anpassen, dass beliebige Matrizen verwendet werden können?
     print("Matrixprinter")
-    #print("width ", len(matrix[0]), "height ", len(matrix))
+    # print("width ", len(matrix[0]), "height ", len(matrix))
     for i in range(len(matrix)):
         print(matrix[i])
 
-class Ball:    #print_matrix(raster
-    def __init__(self, color, cord):
-        #K: Initialisiert ein Objekt der Klasse
-        cordx = random.randint(size, WIDTH) - size
-        cordy = random.randint(size, HEIGHT) - size
-        #s: create rectangle (x1, y1, x2, y2)
-        self.shape = canvas.create_rectangle(cordx, cordy, (cordx + size), (cordy + size), fill=color)
-        #K: Geschwindigkeiten werden zufällig verteilt
-        #K: je grösser das Zufallsintervall ist, desto kleiner die Chance, dass zwei Objekte genau übereinanderliegen
-        self.xspeed = random.randint(-10,10)
-        self.yspeed = random.randint(-10,10)
 
-    def move(self, matrix):
-        # K: Bewegt ein Objekt, so dass er sich +/- im Fenster bewegt
-        canvas.move(self.shape, self.xspeed, self.yspeed)
-        pos = canvas.coords(self.shape)
-        #K: Mittlere x- bzw. Y-Koordinaten
-        x = int(((pos[0] + pos[2])) / 2)
-        y = int(((pos[1]) + pos[3]) / 2)
-        if (x >= WIDTH) or (x <= 0) or (y >= HEIGHT) or (y <= 0):
-            #Ist es möglich, dass Bälle den Rahmen verlassen?
-            outofrange = 1
-        else:
-            matrix[x][y] += 1
-            return matrix
+class Pedestrian:
+    def __init__(self, color):
+        # K: Initialisierung ggf ergänzen mit Startkoordinaten
+        # K: Initialisiert ein Objekt der Klasse
 
-        if y >= (HEIGHT) or y <= 0:
-            self.yspeed = -self.yspeed
-        if x >= (WIDTH) or x <= 0:
-            self.xspeed = -self.xspeed
+        # K: Start und Endpunkt
+        self.startx = random.randint(1, units)
+        self.starty = random.randint(1, units)
+        self.endx = random.randint(1, units)
+        self.endy = random.randint(1, units)
 
-balls = []
-for i in range(100):
-    #Füllt n*3 Bälle in Liste
-    #K: startkoordinaten so verteilt, dass sie "zufällig" im Raum verteilt sind zu beginn
-    #S: Ball(farbe, startkoordinaten)
-    balls.append(Ball("yellow", 0))
-    balls.append(Ball("orange", 0))
-    balls.append(Ball("red", 0))
-    balls.append(Ball("green", 0))
-    balls.append(Ball("black", 0))
+        # K: Position of Agent
+        self.cordx = self.startx
+        self.cordy = self.starty
+
+        self.xspeed = random.randint(-1, 1)
+        self.yspeed = random.randint(-1, 1)
+
+        self.shape = window.create_oval(self.cordx * size, self.cordy * size, self.cordx * size + size,
+                                        self.cordy * size + size, fill=color)
+
+
+class Driver:
+    def __init__(self, color):
+        # K: Initialisierung ggf ergänzen mit Startkoordinaten
+        # K: Initialisiert ein Objekt der Klasse
+
+        # K: Start und Endpunkt
+        self.startx =  random.randint(1,units)
+        self.starty = random.randint(1,units)
+        self.endx = random.randint(1,units)
+        self.endy = random.randint(1,units)
+
+        # K: Position of Agent
+        self.cordx= self.startx
+        self.cordy= self.starty
+
+        self.xspeed = 0
+        self.yspeed = 0
+        self.shape = window.create_rectangle(self.cordx * size, self.cordy * size, self.cordx * size + size,
+                                             self.cordy * size + size, fill=color)
+
+
+def move(agent, matrix):
+
+    # K: Berechnet Koordinaten im Koordinatensystem
+    if agent.cordx<agent.endx:
+        agent.cordx += 1
+        agent.xspeed = 1
+
+    if agent.cordx>agent.endx:
+        agent.cordx -= 1
+        agent.xspeed = -1
+
+    if agent.cordx==agent.endx:
+        agent.xspeed= 0
+
+    if agent.cordy<agent.endy:
+        agent.cordy += 1
+        agent.yspeed = 1
+
+    if agent.cordy>agent.endy:
+        agent.cordy -= 1
+        agent.yspeed = -1
+
+    if agent.cordy==agent.endy:
+        agent.yspeed=0
+
+    # K: Bewegt ein Objekt im Fenster
+    window.move(agent.shape, agent.xspeed * size, agent.yspeed * size)
+
+
+    # Berechnet Koordinaten im Koordinatensystem
+    x = agent.cordx
+    y = agent.cordy
+
+    # K: Verhindert, dass Bälle den Rahmen verlassen
+    if y >= (units - 1) or y <= 0:
+        agent.yspeed = -agent.yspeed
+    if x >= (units - 1) or x <= 0:
+        agent.xspeed = -agent.xspeed
+
+    # Füllt Position in die Matrix
+    if (x >= units) or (x < 0) or (y >= units) or (y < 0):
+        # Ist es möglich, dass Bälle den Rahmen verlassen?
+        outofrange = 1
+    else:
+        matrix[x][y] += 1
+        return matrix
+
+
+###
+# Beginn "Main function"
+###
+
+# K: öffnet neues Fenster und initialisiert Koordinatenraster
+tk = Tk()
+window = Canvas(tk, width=WIDTH, height=HEIGHT)
+schachbrett(window)
+tk.title("simulation_try1")
+window.pack()
+
+walkers = []
+drivers = []
+for i in range(15):
+    # Füllt n*3 Bälle in Liste
+    # K: startkoordinaten so verteilt, dass sie "zufällig" im Raum verteilt sind zu beginn
+    # S: Ball(farbe, startkoordinaten)
+    walkers.append(Pedestrian("green"))
+    walkers.append(Pedestrian("magenta"))
+    drivers.append(Driver("red"))
+    # balls.append(Ball("green", 0))
+    # balls.append(Ball("black", 0))
 
 while True:
-    #K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
-    balls.append(Ball("magenta", 100))
-    balls.append(Ball("blue", 100))
+    # K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
+    # balls.append(Ball("magenta", 100))
+    # balls.append(Ball("blue", 100))
     raster = initialize_gitter()
-    for ball in balls:
-        ball.move(raster)
+    for ped in walkers:
+        move(ped, raster)
+    for car in drivers:
+        move(car, raster)
     tk.update()
-    time.sleep(0.01)
-    #print_matrix(raster)
 
+    # schnelligkeit der Animation wird hier festgelegt
+    time.sleep(0.2)
+    # print_matrix(raster)
 
 tk.mainloop
