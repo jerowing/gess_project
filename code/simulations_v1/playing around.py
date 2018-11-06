@@ -9,6 +9,7 @@ from tkinter import *
 from numpy import *
 import random
 import time
+from PIL import ImageTk, Image
 
 
 # Height/Width of window:
@@ -134,10 +135,14 @@ class Car:
 
 
 tk = Tk()
-window = Canvas(tk, width=LENGTH, height=LENGTH)
+window = Canvas(tk, width=LENGTH, height=LENGTH, )
 schachbrett(window)
 tk.title("INTERACTION - PEDESTRAIANS & CARS")
 window.pack()
+# sets the map in the background
+img = Image.open('map.gif')
+backgr = ImageTk.PhotoImage(img)
+canvas_img = window.create_image(0, 0, image=backgr)
 
 
 old_matrix = array(zeros((units, units)), dtype=int)
@@ -157,11 +162,11 @@ tk.update()
 time.sleep(time_t)
 
 
+
 while True:
     print(new_matrix)
     old_matrix = new_matrix
     new_matrix = array(zeros((units, units)), dtype=int)
-
     # SPAWN CONTINUOUSLY
     # ped.append(Pedestrian("green"))
     # cars.append(Car("red"))
@@ -177,4 +182,3 @@ while True:
 
 
 tk.mainloop()
-
