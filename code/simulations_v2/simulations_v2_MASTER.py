@@ -2,16 +2,18 @@
 from tkinter import *
 import random
 import time
+from PIL import ImageTk, Image
 
 # K: Inspiration zu grossen Teilen aus der Playlist:
 # https://www.youtube.com/watch?v=lc8NNJgeVjI&index=12&list=PLsk-HSGFjnaGe7sS_4VpZoEtZF2VoWtoR
 
 # K: globale Variabeln deklarieren
 # K: width, height und size hier initialisieren, damit sie später von überall aufgerufen werden können.
-WIDTH = 1000
-HEIGHT = 1000
+WIDTH = 600
+HEIGHT = 600
 units = 50 # setzt Feinheit der Koordinaten fest
 size = WIDTH / units
+t_display = 0    # Time displayed in window
 
 
 # Malt Raster für Koordinatensystem (don't touch!!)
@@ -159,9 +161,9 @@ time_label = Label(window, text="Time elapsed: ")
 time_label.place(x=10, y=WIDTH - 50)
 
 # K: sets the map in the background
-img = Image.open('map.gif')
-backgr = ImageTk.PhotoImage(img)
-canvas_img = window.create_image(0, 0, image=backgr)
+# img = Image.open('map.gif')
+# backgr = ImageTk.PhotoImage(img)
+# canvas_img = window.create_image(0, 0, image=backgr)
 
 
 walkers = []
@@ -177,6 +179,11 @@ for i in range(15):
     # balls.append(Ball("black", 0))
 
 while True:
+    # Updates Time in display window
+    t_display += 1
+    t_str = str(t_display)
+    print_time(t_str)
+
     # K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
     # balls.append(Ball("magenta", 100))
     # balls.append(Ball("blue", 100))
