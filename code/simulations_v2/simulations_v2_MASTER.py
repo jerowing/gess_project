@@ -9,9 +9,9 @@ from PIL import ImageTk, Image
 
 # K: globale Variabeln deklarieren
 # K: width, height und size hier initialisieren, damit sie später von überall aufgerufen werden können.
-WIDTH = 600
-HEIGHT = 600
-units = 50 # setzt Feinheit der Koordinaten fest
+WIDTH = 1000
+HEIGHT = 1000
+units = 100  # setzt Feinheit der Koordinaten fest
 size = WIDTH / units
 t_display = 0    # Time displayed in window
 
@@ -161,9 +161,9 @@ time_label = Label(window, text="Time elapsed: ")
 time_label.place(x=10, y=WIDTH - 50)
 
 # K: sets the map in the background
-# img = Image.open('map.gif')
-# backgr = ImageTk.PhotoImage(img)
-# canvas_img = window.create_image(0, 0, image=backgr)
+img = Image.open('map.gif')
+backgr = ImageTk.PhotoImage(img)
+canvas_img = window.create_image(500, 500, image=backgr)
 
 
 walkers = []

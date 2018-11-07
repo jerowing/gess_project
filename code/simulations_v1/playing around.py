@@ -20,7 +20,7 @@ n_pedestrians = 5
 # Amount of cars to be spawned:
 n_cars = 5
 # SPEED OF ANIMATION:
-time_t = 0.9
+time_t = 0.2
 # Display time
 t_display = 0
 
