@@ -11,7 +11,6 @@ import random
 import time
 from PIL import ImageTk, Image
 
-
 # Height/Width of window:
 LENGTH = 600
 # Squares horizontally/vertically:
@@ -22,9 +21,10 @@ n_pedestrians = 5
 n_cars = 5
 # SPEED OF ANIMATION:
 time_t = 0.2
+# Display time
+t_display = 0
 
 size = LENGTH / units
-
 
 # Create array of paths for pedestrians and cars
 path_ped = []
@@ -57,8 +57,8 @@ class Pedestrian:
     def __init__(self, color):
         self.path = random.randrange(1, units - 1)
         self.pos = 0
-        self.cordxn = path_ped[self.path][0][0]  #XN: Koordinate der X-Achse, Spaltenkoordinate von Matrize (n)
-        self.cordym = path_ped[self.path][0][1]  #YM: Koordinate der Y-Achse, Zeilenkoordinate von Matrize (m)
+        self.cordxn = path_ped[self.path][0][0]  # XN: Koordinate der X-Achse, Spaltenkoordinate von Matrize (n)
+        self.cordym = path_ped[self.path][0][1]  # YM: Koordinate der Y-Achse, Zeilenkoordinate von Matrize (m)
         self.dirxn = path_ped[self.path][1][0] - path_ped[self.path][0][0]
         self.dirym = path_ped[self.path][1][1] - path_ped[self.path][0][1]
         self.object = window.create_oval(self.cordxn * size, self.cordym * size, self.cordxn * size + size,
@@ -131,6 +131,11 @@ class Car:
             return True
 
 
+def print_time(t):
+    current_time = Label(window, text=t)
+    current_time.place(x=105, y=LENGTH-50)
+
+
 # MAIN FUNCTION --------------------------------------------------------------------------------------------------------
 
 
@@ -139,15 +144,19 @@ window = Canvas(tk, width=LENGTH, height=LENGTH, )
 schachbrett(window)
 tk.title("INTERACTION - PEDESTRAIANS & CARS")
 window.pack()
+
 # sets the map in the background
 img = Image.open('map.gif')
 backgr = ImageTk.PhotoImage(img)
 canvas_img = window.create_image(0, 0, image=backgr)
 
+# time display box
+time_label = Label(window, text="Time elapsed: ")
+time_label.place(x=10, y=LENGTH - 50)
+
 
 old_matrix = array(zeros((units, units)), dtype=int)
 new_matrix = array(zeros((units, units)), dtype=int)
-
 
 # Create Agents
 ped = []
@@ -161,15 +170,20 @@ for i in range(n_cars):
 tk.update()
 time.sleep(time_t)
 
-
-
 while True:
-    print(new_matrix)
+
+    # displaying time
+    t_display += 1
+    t_str = str(t_display)
+    print_time(t_str)
+
+    # print(new_matrix)
     old_matrix = new_matrix
     new_matrix = array(zeros((units, units)), dtype=int)
+
     # SPAWN CONTINUOUSLY
-    # ped.append(Pedestrian("green"))
-    # cars.append(Car("red"))
+    ped.append(Pedestrian("green"))
+    cars.append(Car("red"))
 
     for i in ped:
         moving = i.move(old_matrix, new_matrix)
@@ -179,6 +193,5 @@ while True:
 
     # SPEED OF ANIMATION
     time.sleep(time_t)
-
 
 tk.mainloop()

@@ -1,7 +1,11 @@
-Hintergrundraster erstellen: "Heatmap" erstellen mit Kodierung, so dass gewisse Wege gesperrt sind.
-Visuelle umsetzung der Tannenbarkreuzung
-Klassen für verschiedene Agents erstellen: Tram, Auto, Fussgänger
-Agents programmieren: Agents so programmieren, dass sie Ziel suchen. Zusammenstösse zwischen agents.
-Zeitmessung für Stau implementieren --> wie lange wartet Auto?
-Darstellung Agents ohne überschneidung
-Graphische Darstellung Karte
+-Nicos file mergen. Masterfile upload to github. (Jerome)
+Return false in move function
+-Agents so initialisieren, dass sie sich auf geraden Linien fortbewegen.
+-Agents an verschiedenen Quellen spawnen (Pascal)
+-Delete Pedestrians, die am Ziel angekommen sind (Nico)
+-Tannenbar unmsetzen (genaue Grösse festlegen? skalierbar?) (Leo)
+-Indikator für wartende Fussgänger?
+
+-Ampeln und verschiedene Pfade (hardcoden) implementieren (further future)
+
+-Tram Klasse
