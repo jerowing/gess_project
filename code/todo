@@ -1,10 +1,9 @@
 -Nicos file mergen. Masterfile upload to github. (Jerome)
-Return false in move function
+-Return false in move function
 -Agents so initialisieren, dass sie sich auf geraden Linien fortbewegen.
 -Agents an verschiedenen Quellen spawnen (Pascal)
 -Delete Pedestrians, die am Ziel angekommen sind (Nico)
--Tannenbar unmsetzen (genaue Grösse festlegen? skalierbar?) (Leo)
--Indikator für wartende Fussgänger?
+-Indikator für wartende Fussgänger? (Leo)
 
 -Ampeln und verschiedene Pfade (hardcoden) implementieren (further future)
 

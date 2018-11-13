@@ -56,8 +56,8 @@ class Pedestrian:
     def __init__(self, color):
         self.path = random.randrange(1, units - 1)
         self.pos = 0
-        self.cordxn = path_ped[self.path][0][0]  #XN: Koordinate der X-Achse, Spaltenkoordinate von Matrize (n)
-        self.cordym = path_ped[self.path][0][1]  #YM: Koordinate der Y-Achse, Zeilenkoordinate von Matrize (m)
+        self.cordxn = path_ped[self.path][0][0]  # XN: Koordinate der X-Achse, Spaltenkoordinate von Matrize (n)
+        self.cordym = path_ped[self.path][0][1]  # YM: Koordinate der Y-Achse, Zeilenkoordinate von Matrize (m)
         self.dirxn = path_ped[self.path][1][0] - path_ped[self.path][0][0]
         self.dirym = path_ped[self.path][1][1] - path_ped[self.path][0][1]
         self.object = window.create_oval(self.cordxn * size, self.cordym * size, self.cordxn * size + size,
