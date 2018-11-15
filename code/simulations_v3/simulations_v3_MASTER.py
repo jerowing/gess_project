@@ -14,7 +14,7 @@ WIDTH = 1000
 HEIGHT = 1000
 units = 100  # setzt Feinheit der Koordinaten fest
 size = WIDTH / units
-t_display = 0.00001    # Time displayed in window
+t_display = 0.01    # Time displayed in window
 
 
 # Malt Raster für Koordinatensystem (don't touch!!)
@@ -59,33 +59,63 @@ class Pedestrian:
         # K: Initialisierung ggf ergänzen mit Startkoordinaten
         # K: Initialisiert ein Objekt der Klasse
 
+        # Variable declaration for Crosswalks
+        #    crosswalk_L_L  very left crosswalk (see map) and left lane
+        #    crosswalk_L_R  very left crosswalk / right lane
+        #    crosswalk_M_L  middle crosswalk / left lane
+        #    crosswalk_M_R  middle crosswalk / right lane
+        #    crosswalk_U_U  upper crosswalk / upper lane
+        #    crosswalk_U_B  upper crosswalk / bottom lane
+        #    crosswalk_B_U  bottom crosswalk / upper lane
+        #    crosswalk_B_B  bottom crosswalk / bottom lane
+
         # K: Dictionary für x-Startkoordinate des Fussgängers
         self.startposx = {
-            'crosswalk_L_L' : 33,
-            'crosswalk_L_R' : 35,
-            'crosswalk_M_L' : 56,
-            'crosswalk_M_R' : 58}
+            'crosswalk_L_L': 33,
+            'crosswalk_L_R': 35,
+            'crosswalk_M_L': 56,
+            'crosswalk_M_R': 58,
+            'crosswalk_U_U': 68,
+            'crosswalk_U_B': 61,
+            'crosswalk_B_U': 68,
+            'crosswalk_B_B': 61
+        }
 
         # K: Dictionary für y-Startkoordinate des Fussgängers
         self.startposy = {
             'crosswalk_L_L': 38,
             'crosswalk_L_R': 48,
             'crosswalk_M_L': 38,
-            'crosswalk_M_R': 48}
+            'crosswalk_M_R': 48,
+            'crosswalk_U_U': 37,
+            'crosswalk_U_B': 39,
+            'crosswalk_B_U': 67,
+            'crosswalk_B_B': 69
+        }
 
         # K: Dictionary für x-Endkoordinate des Fussgängers
         self.endposx = {
             'crosswalk_L_L': 33,
             'crosswalk_L_R': 35,
             'crosswalk_M_L': 56,
-            'crosswalk_M_R': 58}
+            'crosswalk_M_R': 58,
+            'crosswalk_U_U': 61,
+            'crosswalk_U_B': 68,
+            'crosswalk_B_U': 61,
+            'crosswalk_B_B': 68
+        }
 
         # K: Dictionary für y-Endkoordinate des Fussgängers
         self.endposy = {
             'crosswalk_L_L': 48,
             'crosswalk_L_R': 38,
             'crosswalk_M_L': 48,
-            'crosswalk_M_R': 38}
+            'crosswalk_M_R': 38,
+            'crosswalk_U_U': 37,
+            'crosswalk_U_B': 39,
+            'crosswalk_B_U': 67,
+            'crosswalk_B_B': 69
+        }
 
         # K: Start und Endpunkt wird zugeordnet, indem im entsprechenden dicionary der Wert ausgelesen wird
         self.startx = self.startposx[path]
@@ -97,8 +127,8 @@ class Pedestrian:
         self.cordx = self.startx
         self.cordy = self.starty
 
-        self.xspeed = random.randint(-1, 1)
-        self.yspeed = random.randint(-1, 1)
+        #self.xspeed = random.randint(-1, 1)
+        #self.yspeed = random.randint(-1, 1)
 
         self.shape = window.create_oval(self.cordx * size, self.cordy * size, self.cordx * size + size,
                                         self.cordy * size + size, fill='green')
@@ -201,7 +231,45 @@ canvas_img = window.create_image(503, 500, image=backgr)
 
 walkers = []
 drivers = []
+
+
+
 for i in range(9999):
+    # Füllt n*3 Bälle in Liste
+    # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
+    # S: Pedestrian(Weg)
+    if i%random.randint(99,1000) == 0:
+        walkers.append(Pedestrian("crosswalk_L_L"))
+    if i%random.randint(90,200) == 0:
+        walkers.append(Pedestrian("crosswalk_L_R"))
+    if i%random.randint(500,700) == 0:
+        walkers.append(Pedestrian("crosswalk_M_L"))
+    if i%random.randint(100,800) == 0:
+        walkers.append(Pedestrian("crosswalk_M_R"))
+    if i%random.randint(80,1000) == 0:
+        drivers.append(Driver("red"))
+    # balls.append(Ball("green", 0))
+    # balls.append(Ball("black", 0))
+
+    # Updates Time in display window
+    t_display += 1
+    t_str = str(t_display)
+    print_time(t_str)
+
+    # K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
+    # balls.append(Ball("magenta", 100))
+    # balls.append(Ball("blue", 100))
+    raster = initialize_gitter()
+    for ped in walkers:
+        move(ped, raster)
+    for car in drivers:
+        move(car, raster)
+    tk.update()
+
+
+
+
+'''for i in range(9999):
     # Füllt n*3 Bälle in Liste
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Pedestrian(Weg)
@@ -232,7 +300,7 @@ while True:
         move(ped, raster)
     for car in drivers:
         move(car, raster)
-    tk.update()
+    tk.update()'''
 
     # schnelligkeit der Animation wird hier festgelegt
 
