@@ -11,7 +11,7 @@ from PIL import ImageTk, Image
 # K: width, height und size hier initialisieren, damit sie später von überall aufgerufen werden können.
 WIDTH = 1000
 HEIGHT = 1000
-units = 100  # setzt Feinheit der Koordinaten fest
+units = 10  # setzt Feinheit der Koordinaten fest
 size = WIDTH / units
 t_display = 0    # Time displayed in window
 
@@ -64,9 +64,8 @@ class Pedestrian:
         self.cordx = self.startx
         self.cordy = self.starty
 
-        self.xspeed = random.randint(-1, 1)
-        self.yspeed = random.randint(-1, 1)
-
+        self.xspeed = 0
+        self.yspeed = 1
         self.shape = window.create_oval(self.cordx * size, self.cordy * size, self.cordx * size + size,
                                         self.cordy * size + size, fill=color)
 
@@ -86,49 +85,26 @@ class Driver:
         self.cordx= self.startx
         self.cordy= self.starty
 
-        self.xspeed = 0
+        self.xspeed = 1
         self.yspeed = 0
         self.shape = window.create_rectangle(self.cordx * size, self.cordy * size, self.cordx * size + size,
                                              self.cordy * size + size, fill=color)
 
 
 def move(agent, matrix):
-
-    # K: Berechnet Koordinaten im Koordinatensystem
-    if agent.cordx<agent.endx:
-        agent.cordx += 1
-        agent.xspeed = 1
-
-    if agent.cordx>agent.endx:
-        agent.cordx -= 1
-        agent.xspeed = -1
-
-    if agent.cordx==agent.endx:
-        agent.xspeed= 0
-
-    if agent.cordy<agent.endy:
-        agent.cordy += 1
-        agent.yspeed = 1
-
-    if agent.cordy>agent.endy:
-        agent.cordy -= 1
-        agent.yspeed = -1
-
-    if agent.cordy==agent.endy:
-        agent.yspeed=0
-
     # K: Bewegt ein Objekt im Fenster
     window.move(agent.shape, agent.xspeed * size, agent.yspeed * size)
 
-
     # Berechnet Koordinaten im Koordinatensystem
+    agent.cordx += agent.xspeed
+    agent.cordy += agent.yspeed
     x = agent.cordx
     y = agent.cordy
 
     # K: Verhindert, dass Bälle den Rahmen verlassen
-    if y >= (units - 1) or y <= 0:
+    if y >= (units) or y < 0:
         agent.yspeed = -agent.yspeed
-    if x >= (units - 1) or x <= 0:
+    if x >= (units - 1) or x < 0:
         agent.xspeed = -agent.xspeed
 
     # Füllt Position in die Matrix
@@ -136,8 +112,16 @@ def move(agent, matrix):
         # Ist es möglich, dass Bälle den Rahmen verlassen?
         outofrange = 1
     else:
-        matrix[x][y] += 1
-        return matrix
+        if matrix[x][y] == 0:
+            if isinstance(agent, Driver):
+                matrix[x][y] = 2
+            if isinstance(agent, Pedestrian):
+                matrix[x][y] = 1
+        else:
+            # Macht Zug rückgängig, so dass sich der Agent nicht bewegt
+            agent.cordx -= agent.xspeed
+            agent.cordy -= agent.yspeed
+            window.move(agent.shape, -agent.xspeed * size, - agent.yspeed * size)
 
 
 def print_time(t):
@@ -168,7 +152,7 @@ canvas_img = window.create_image(500, 500, image=backgr)
 
 walkers = []
 drivers = []
-for i in range(15):
+for i in range(3):
     # Füllt n*3 Bälle in Liste
     # K: startkoordinaten so verteilt, dass sie "zufällig" im Raum verteilt sind zu beginn
     # S: Ball(farbe, startkoordinaten)
@@ -178,6 +162,8 @@ for i in range(15):
     # balls.append(Ball("green", 0))
     # balls.append(Ball("black", 0))
 
+raster_new = initialize_gitter()
+raster_old = initialize_gitter()
 while True:
     # Updates Time in display window
     t_display += 1
@@ -187,15 +173,16 @@ while True:
     # K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
     # balls.append(Ball("magenta", 100))
     # balls.append(Ball("blue", 100))
-    raster = initialize_gitter()
     for ped in walkers:
-        move(ped, raster)
+        move(ped, raster_new)
     for car in drivers:
-        move(car, raster)
+        move(car, raster_new)
     tk.update()
-
+    #print_matrix(raster_old)
+    raster_new  = initialize_gitter()
+    raster_old = raster_new
     # schnelligkeit der Animation wird hier festgelegt
-    time.sleep(0.2)
+    time.sleep(0.5)
     # print_matrix(raster)
 
 tk.mainloop
