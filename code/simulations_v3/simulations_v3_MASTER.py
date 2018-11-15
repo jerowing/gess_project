@@ -14,7 +14,7 @@ WIDTH = 1000
 HEIGHT = 1000
 units = 100  # setzt Feinheit der Koordinaten fest
 size = WIDTH / units
-t_display = 0    # Time displayed in window
+t_display = 0.00001    # Time displayed in window
 
 
 # Malt Raster für Koordinatensystem (don't touch!!)
@@ -35,6 +35,10 @@ def schachbrett(canvas):
 # Meine Idee (Jérôme): Erste Version -> anhalten sobald Zielkoordinaten erreicht
 # Später: gezielt richtung Ziel bewegen
 
+
+
+
+
 def initialize_gitter():
     # Initialisiert Koordinatenmatrix mit Nullen-Einträgen
     matrix = [[0 for x in range(units)] for y in range(units)]
@@ -51,15 +55,43 @@ def print_matrix(matrix):
 
 
 class Pedestrian:
-    def __init__(self, color):
+    def __init__(self, path):
         # K: Initialisierung ggf ergänzen mit Startkoordinaten
         # K: Initialisiert ein Objekt der Klasse
 
-        # K: Start und Endpunkt
-        self.startx = random.randint(1, units)
-        self.starty = random.randint(1, units)
-        self.endx = random.randint(1, units)
-        self.endy = random.randint(1, units)
+        # K: Dictionary für x-Startkoordinate des Fussgängers
+        self.startposx = {
+            'crosswalk_L_L' : 33,
+            'crosswalk_L_R' : 35,
+            'crosswalk_M_L' : 56,
+            'crosswalk_M_R' : 58}
+
+        # K: Dictionary für y-Startkoordinate des Fussgängers
+        self.startposy = {
+            'crosswalk_L_L': 38,
+            'crosswalk_L_R': 48,
+            'crosswalk_M_L': 38,
+            'crosswalk_M_R': 48}
+
+        # K: Dictionary für x-Endkoordinate des Fussgängers
+        self.endposx = {
+            'crosswalk_L_L': 33,
+            'crosswalk_L_R': 35,
+            'crosswalk_M_L': 56,
+            'crosswalk_M_R': 58}
+
+        # K: Dictionary für y-Endkoordinate des Fussgängers
+        self.endposy = {
+            'crosswalk_L_L': 48,
+            'crosswalk_L_R': 38,
+            'crosswalk_M_L': 48,
+            'crosswalk_M_R': 38}
+
+        # K: Start und Endpunkt wird zugeordnet, indem im entsprechenden dicionary der Wert ausgelesen wird
+        self.startx = self.startposx[path]
+        self.starty = self.startposy[path]
+        self.endx = self.endposx[path]
+        self.endy = self.endposy[path]
 
         # K: Position of Agent
         self.cordx = self.startx
@@ -69,7 +101,7 @@ class Pedestrian:
         self.yspeed = random.randint(-1, 1)
 
         self.shape = window.create_oval(self.cordx * size, self.cordy * size, self.cordx * size + size,
-                                        self.cordy * size + size, fill=color)
+                                        self.cordy * size + size, fill='green')
 
 
 class Driver:
@@ -90,7 +122,7 @@ class Driver:
         self.xspeed = 0
         self.yspeed = 0
         self.shape = window.create_rectangle(self.cordx * size, self.cordy * size, self.cordx * size + size,
-                                             self.cordy * size + size, fill=color)
+                                             self.cordy * size + size, fill='magenta')
 
 
 def move(agent, matrix):
@@ -169,13 +201,20 @@ canvas_img = window.create_image(503, 500, image=backgr)
 
 walkers = []
 drivers = []
-for i in range(15):
+for i in range(9999):
     # Füllt n*3 Bälle in Liste
-    # K: startkoordinaten so verteilt, dass sie "zufällig" im Raum verteilt sind zu beginn
-    # S: Ball(farbe, startkoordinaten)
-    walkers.append(Pedestrian("green"))
-    walkers.append(Pedestrian("magenta"))
-    drivers.append(Driver("red"))
+    # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
+    # S: Pedestrian(Weg)
+    if i%7 == 0:
+        walkers.append(Pedestrian("crosswalk_L_L"))
+    if i%3 == 0:
+        walkers.append(Pedestrian("crosswalk_L_R"))
+    if i%9 == 0:
+        walkers.append(Pedestrian("crosswalk_M_L"))
+    if i%12 == 0:
+        walkers.append(Pedestrian("crosswalk_M_R"))
+    if i%99 == 0:
+        drivers.append(Driver("red"))
     # balls.append(Ball("green", 0))
     # balls.append(Ball("black", 0))
 
@@ -196,7 +235,7 @@ while True:
     tk.update()
 
     # schnelligkeit der Animation wird hier festgelegt
-    time.sleep(0.2)
+
     # print_matrix(raster)
 
 tk.mainloop
