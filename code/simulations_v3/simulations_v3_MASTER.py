@@ -4,7 +4,6 @@ import random
 import time
 from PIL import ImageTk, Image
 
-
 # K: Inspiration zu grossen Teilen aus der Playlist:
 # https://www.youtube.com/watch?v=lc8NNJgeVjI&index=12&list=PLsk-HSGFjnaGe7sS_4VpZoEtZF2VoWtoR
 
@@ -12,7 +11,7 @@ from PIL import ImageTk, Image
 # K: width, height und size hier initialisieren, damit sie später von überall aufgerufen werden können.
 WIDTH = 1000
 HEIGHT = 1000
-units = 100  # setzt Feinheit der Koordinaten fest
+units = 10  # setzt Feinheit der Koordinaten fest
 size = WIDTH / units
 t_display = 0    # Time displayed in window
 
@@ -35,10 +34,6 @@ def schachbrett(canvas):
 # Meine Idee (Jérôme): Erste Version -> anhalten sobald Zielkoordinaten erreicht
 # Später: gezielt richtung Ziel bewegen
 
-
-
-
-
 def initialize_gitter():
     # Initialisiert Koordinatenmatrix mit Nullen-Einträgen
     matrix = [[0 for x in range(units)] for y in range(units)]
@@ -55,172 +50,61 @@ def print_matrix(matrix):
 
 
 class Pedestrian:
-    def __init__(self, path):
+    def __init__(self, color):
+        # K: Initialisierung ggf ergänzen mit Startkoordinaten
         # K: Initialisiert ein Objekt der Klasse
 
-        # Variable declaration for Crosswalks
-        #    crosswalk_L_L  very left crosswalk (see map) and left lane
-        #    crosswalk_L_R  very left crosswalk / right lane
-        #    crosswalk_M_L  middle crosswalk / left lane
-        #    crosswalk_M_R  middle crosswalk / right lane
-        #    crosswalk_U_U  upper crosswalk / upper lane
-        #    crosswalk_U_B  upper crosswalk / bottom lane
-        #    crosswalk_B_U  bottom crosswalk / upper lane
-        #    crosswalk_B_B  bottom crosswalk / bottom lane
-
-        # K: Dictionary für x-Startkoordinate des Fussgängers
-        self.startposx = {
-            'crosswalk_L_L': 33,
-            'crosswalk_L_R': 35,
-            'crosswalk_M_L': 56,
-            'crosswalk_M_R': 58,
-            'crosswalk_U_U': 69,
-            'crosswalk_U_B': 59,
-            'crosswalk_B_U': 69,
-            'crosswalk_B_B': 59
-        }
-
-        # K: Dictionary für y-Startkoordinate des Fussgängers
-        self.startposy = {
-            'crosswalk_L_L': 38,
-            'crosswalk_L_R': 48,
-            'crosswalk_M_L': 38,
-            'crosswalk_M_R': 48,
-            'crosswalk_U_U': 37,
-            'crosswalk_U_B': 39,
-            'crosswalk_B_U': 67,
-            'crosswalk_B_B': 69
-        }
-
-        # K: Dictionary für x-Endkoordinate des Fussgängers
-        self.endposx = {
-            'crosswalk_L_L': 33,
-            'crosswalk_L_R': 35,
-            'crosswalk_M_L': 56,
-            'crosswalk_M_R': 58,
-            'crosswalk_U_U': 59,
-            'crosswalk_U_B': 69,
-            'crosswalk_B_U': 59,
-            'crosswalk_B_B': 69
-        }
-
-        # K: Dictionary für y-Endkoordinate des Fussgängers
-        self.endposy = {
-            'crosswalk_L_L': 48,
-            'crosswalk_L_R': 38,
-            'crosswalk_M_L': 48,
-            'crosswalk_M_R': 38,
-            'crosswalk_U_U': 37,
-            'crosswalk_U_B': 39,
-            'crosswalk_B_U': 67,
-            'crosswalk_B_B': 69
-        }
-
-        # K: Start und Endpunkt wird zugeordnet, indem im entsprechenden dicionary der Wert ausgelesen wird
-        self.startx = self.startposx[path]
-        self.starty = self.startposy[path]
-        self.endx = self.endposx[path]
-        self.endy = self.endposy[path]
+        # K: Start und Endpunkt
+        self.startx = random.randint(1, units)
+        self.starty = random.randint(1, units)
+        self.endx = random.randint(1, units)
+        self.endy = random.randint(1, units)
 
         # K: Position of Agent
         self.cordx = self.startx
         self.cordy = self.starty
 
+        self.xspeed = 0
+        self.yspeed = 1
         self.shape = window.create_oval(self.cordx * size, self.cordy * size, self.cordx * size + size,
-                                        self.cordy * size + size, fill='green')
+                                        self.cordy * size + size, fill=color)
 
 
 class Driver:
-    def __init__(self, path):
+    def __init__(self, color):
         # K: Initialisierung ggf ergänzen mit Startkoordinaten
         # K: Initialisiert ein Objekt der Klasse
 
-        # Variable declaration:
-        #    car_L car      driving on the left lane -> upwards
-        #    car_R car      driving on the right lane -> downwards
-        #    car_left_turn   driving on the left lane until crossroad then left turn
-
-        # K: Dictionary für X-STARTkoordinate des Cars
-        self.startposx = {
-            'car_L': 63,
-            'car_R': 65,
-            'car_left_turn': 0
-        }
-
-        # K: Dictionary für Y-STARTkoordinate des Cars
-        self.startposy = {
-            'car_L': 1,
-            'car_R': 99,
-            'car_left_turn': 0
-        }
-
-        # K: Dictionary für X-ENDkoordinate des Cars
-        self.endposx = {
-            'car_L': 63,
-            'car_R': 65,
-            'car_left_turn': 55
-        }
-
-        # K: Dictionary für Y-ENDkoordinate des Cars
-        self.endposy = {
-            'car_L': 99,
-            'car_R': 1,
-            'car_left_turn': 0
-        }
-
         # K: Start und Endpunkt
-        self.startx = self.startposx[path]
-        self.starty = self.startposy[path]
-        self.endx = self.endposx[path]
-        self.endy = self.endposy[path]
+        self.startx =  random.randint(1,units)
+        self.starty = random.randint(1,units)
+        self.endx = random.randint(1,units)
+        self.endy = random.randint(1,units)
 
         # K: Position of Agent
         self.cordx= self.startx
         self.cordy= self.starty
 
-        #self.xspeed = 0
-        #self.yspeed = 0
+        self.xspeed = 1
+        self.yspeed = 0
         self.shape = window.create_rectangle(self.cordx * size, self.cordy * size, self.cordx * size + size,
-                                             self.cordy * size + size, fill='magenta')
+                                             self.cordy * size + size, fill=color)
 
 
 def move(agent, matrix):
-
-    # K: Berechnet Koordinaten im Koordinatensystem
-    if agent.cordx<agent.endx:
-        agent.cordx += 1
-        agent.xspeed = 1
-
-    if agent.cordx>agent.endx:
-        agent.cordx -= 1
-        agent.xspeed = -1
-
-    if agent.cordx==agent.endx:
-        agent.xspeed= 0
-
-    if agent.cordy<agent.endy:
-        agent.cordy += 1
-        agent.yspeed = 1
-
-    if agent.cordy>agent.endy:
-        agent.cordy -= 1
-        agent.yspeed = -1
-
-    if agent.cordy==agent.endy:
-        agent.yspeed=0
-
     # K: Bewegt ein Objekt im Fenster
     window.move(agent.shape, agent.xspeed * size, agent.yspeed * size)
 
-
     # Berechnet Koordinaten im Koordinatensystem
+    agent.cordx += agent.xspeed
+    agent.cordy += agent.yspeed
     x = agent.cordx
     y = agent.cordy
 
     # K: Verhindert, dass Bälle den Rahmen verlassen
-    if y >= (units - 1) or y <= 0:
+    if y >= (units) or y < 0:
         agent.yspeed = -agent.yspeed
-    if x >= (units - 1) or x <= 0:
+    if x >= (units - 1) or x < 0:
         agent.xspeed = -agent.xspeed
 
     # Füllt Position in die Matrix
@@ -233,9 +117,11 @@ def move(agent, matrix):
                 matrix[x][y] = 2
             if isinstance(agent, Pedestrian):
                 matrix[x][y] = 1
-
-        #matrix[x][y] += 1
-        #return matrix
+        else:
+            # Macht Zug rückgängig, so dass sich der Agent nicht bewegt
+            agent.cordx -= agent.xspeed
+            agent.cordy -= agent.yspeed
+            window.move(agent.shape, -agent.xspeed * size, - agent.yspeed * size)
 
 
 def print_time(t):
@@ -261,46 +147,24 @@ time_label.place(x=10, y=WIDTH - 50)
 # K: sets the map in the background
 img = Image.open('map.gif')
 backgr = ImageTk.PhotoImage(img)
-canvas_img = window.create_image(503, 500, image=backgr)
+canvas_img = window.create_image(500, 500, image=backgr)
 
 
 walkers = []
 drivers = []
-
-
-
-for i in range(9999):
+for i in range(3):
     # Füllt n*3 Bälle in Liste
-    # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
-    # S: Pedestrian(Weg)
-    if i%random.randint(9,15) == 0:
-        walkers.append(Pedestrian("crosswalk_L_L"))
-    if i%random.randint(50,60) == 0:
-        walkers.append(Pedestrian("crosswalk_L_R"))
+    # K: startkoordinaten so verteilt, dass sie "zufällig" im Raum verteilt sind zu beginn
+    # S: Ball(farbe, startkoordinaten)
+    walkers.append(Pedestrian("green"))
+    walkers.append(Pedestrian("magenta"))
+    drivers.append(Driver("red"))
+    # balls.append(Ball("green", 0))
+    # balls.append(Ball("black", 0))
 
-    if i%random.randint(10,20) == 0:
-        walkers.append(Pedestrian("crosswalk_M_L"))
-    if i%random.randint(8,12) == 0:
-        walkers.append(Pedestrian("crosswalk_M_R"))
-
-    if i%random.randint(60,80) == 0:
-        walkers.append(Pedestrian("crosswalk_U_U"))
-    if i%random.randint(5,10) == 0:
-        walkers.append(Pedestrian("crosswalk_U_B"))
-
-    if i%random.randint(20,40) == 0:
-        walkers.append(Pedestrian("crosswalk_B_U"))
-    if i%random.randint(20,120) == 0:
-        walkers.append(Pedestrian("crosswalk_B_B"))
-
-    if i%random.randint(5,20) == 0:
-        drivers.append(Driver("car_L"))
-    if i%random.randint(4,9) == 0:
-        drivers.append(Driver("car_R"))
-
-    raster_new = initialize_gitter()
-    raster_old = initialize_gitter()
-
+raster_new = initialize_gitter()
+raster_old = initialize_gitter()
+while True:
     # Updates Time in display window
     t_display += 1
     t_str = str(t_display)
@@ -309,17 +173,16 @@ for i in range(9999):
     # K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
     # balls.append(Ball("magenta", 100))
     # balls.append(Ball("blue", 100))
-    raster = initialize_gitter()
     for ped in walkers:
-        move(ped, raster)
+        move(ped, raster_new)
     for car in drivers:
-        move(car, raster)
+        move(car, raster_new)
     tk.update()
-    #print_matrix(raster_old
-    raster_new = initialize_gitter()
+    #print_matrix(raster_old)
+    raster_new  = initialize_gitter()
     raster_old = raster_new
     # schnelligkeit der Animation wird hier festgelegt
-    time.sleep(0.1)
+    time.sleep(0.5)
     # print_matrix(raster)
 
 tk.mainloop
