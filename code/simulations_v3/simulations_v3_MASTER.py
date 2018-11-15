@@ -14,7 +14,7 @@ WIDTH = 1000
 HEIGHT = 1000
 units = 100  # setzt Feinheit der Koordinaten fest
 size = WIDTH / units
-t_display = 0.1    # Time displayed in window
+t_display = 0    # Time displayed in window
 
 
 # Malt Raster für Koordinatensystem (don't touch!!)
@@ -56,7 +56,6 @@ def print_matrix(matrix):
 
 class Pedestrian:
     def __init__(self, path):
-        # K: Initialisierung ggf ergänzen mit Startkoordinaten
         # K: Initialisiert ein Objekt der Klasse
 
         # Variable declaration for Crosswalks
@@ -127,30 +126,60 @@ class Pedestrian:
         self.cordx = self.startx
         self.cordy = self.starty
 
-        #self.xspeed = random.randint(-1, 1)
-        #self.yspeed = random.randint(-1, 1)
-
         self.shape = window.create_oval(self.cordx * size, self.cordy * size, self.cordx * size + size,
                                         self.cordy * size + size, fill='green')
 
 
 class Driver:
-    def __init__(self, color):
+    def __init__(self, path):
         # K: Initialisierung ggf ergänzen mit Startkoordinaten
         # K: Initialisiert ein Objekt der Klasse
 
+        # Variable declaration:
+        #    car_L car      driving on the left lane -> upwards
+        #    car_R car      driving on the right lane -> downwards
+        #    car_left_turn   driving on the left lane until crossroad then left turn
+
+        # K: Dictionary für X-STARTkoordinate des Cars
+        self.startposx = {
+            'car_L': 63,
+            'car_R': 65,
+            'car_left_turn': 0
+        }
+
+        # K: Dictionary für Y-STARTkoordinate des Cars
+        self.startposy = {
+            'car_L': 1,
+            'car_R': 99,
+            'car_left_turn': 0
+        }
+
+        # K: Dictionary für X-ENDkoordinate des Cars
+        self.endposx = {
+            'car_L': 63,
+            'car_R': 65,
+            'car_left_turn': 55
+        }
+
+        # K: Dictionary für Y-ENDkoordinate des Cars
+        self.endposy = {
+            'car_L': 99,
+            'car_R': 1,
+            'car_left_turn': 0
+        }
+
         # K: Start und Endpunkt
-        self.startx =  random.randint(1,units)
-        self.starty = random.randint(1,units)
-        self.endx = random.randint(1,units)
-        self.endy = random.randint(1,units)
+        self.startx = self.startposx[path]
+        self.starty = self.startposy[path]
+        self.endx = self.endposx[path]
+        self.endy = self.endposy[path]
 
         # K: Position of Agent
         self.cordx= self.startx
         self.cordy= self.starty
 
-        self.xspeed = 0
-        self.yspeed = 0
+        #self.xspeed = 0
+        #self.yspeed = 0
         self.shape = window.create_rectangle(self.cordx * size, self.cordy * size, self.cordx * size + size,
                                              self.cordy * size + size, fill='magenta')
 
@@ -199,8 +228,14 @@ def move(agent, matrix):
         # Ist es möglich, dass Bälle den Rahmen verlassen?
         outofrange = 1
     else:
-        matrix[x][y] += 1
-        return matrix
+        if matrix[x][y] == 0:
+            if isinstance(agent, Driver):
+                matrix[x][y] = 2
+            if isinstance(agent, Pedestrian):
+                matrix[x][y] = 1
+
+        #matrix[x][y] += 1
+        #return matrix
 
 
 def print_time(t):
@@ -238,28 +273,33 @@ for i in range(9999):
     # Füllt n*3 Bälle in Liste
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Pedestrian(Weg)
-    if i%random.randint(99,100) == 0:
+    if i%random.randint(9,15) == 0:
         walkers.append(Pedestrian("crosswalk_L_L"))
     if i%random.randint(50,60) == 0:
         walkers.append(Pedestrian("crosswalk_L_R"))
 
-    if i%random.randint(100,200) == 0:
+    if i%random.randint(10,20) == 0:
         walkers.append(Pedestrian("crosswalk_M_L"))
-    if i%random.randint(100,150) == 0:
+    if i%random.randint(8,12) == 0:
         walkers.append(Pedestrian("crosswalk_M_R"))
 
-    if i%random.randint(100,200) == 0:
+    if i%random.randint(60,80) == 0:
         walkers.append(Pedestrian("crosswalk_U_U"))
-    if i%random.randint(900,1000) == 0:
+    if i%random.randint(5,10) == 0:
         walkers.append(Pedestrian("crosswalk_U_B"))
 
     if i%random.randint(20,40) == 0:
         walkers.append(Pedestrian("crosswalk_B_U"))
-    if i%random.randint(80,120) == 0:
+    if i%random.randint(20,120) == 0:
         walkers.append(Pedestrian("crosswalk_B_B"))
 
-    if i%random.randint(80,1000) == 0:
-        drivers.append(Driver("red"))
+    if i%random.randint(5,20) == 0:
+        drivers.append(Driver("car_L"))
+    if i%random.randint(4,9) == 0:
+        drivers.append(Driver("car_R"))
+
+    raster_new = initialize_gitter()
+    raster_old = initialize_gitter()
 
     # Updates Time in display window
     t_display += 1
@@ -275,45 +315,11 @@ for i in range(9999):
     for car in drivers:
         move(car, raster)
     tk.update()
-
-
-
-
-'''for i in range(9999):
-    # Füllt n*3 Bälle in Liste
-    # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
-    # S: Pedestrian(Weg)
-    if i%7 == 0:
-        walkers.append(Pedestrian("crosswalk_L_L"))
-    if i%3 == 0:
-        walkers.append(Pedestrian("crosswalk_L_R"))
-    if i%9 == 0:
-        walkers.append(Pedestrian("crosswalk_M_L"))
-    if i%12 == 0:
-        walkers.append(Pedestrian("crosswalk_M_R"))
-    if i%99 == 0:
-        drivers.append(Driver("red"))
-    # balls.append(Ball("green", 0))
-    # balls.append(Ball("black", 0))
-
-while True:
-    # Updates Time in display window
-    t_display += 1
-    t_str = str(t_display)
-    print_time(t_str)
-
-    # K: lässt Ball im Fenster herumfliegen, so dass er an den Wänden abprallt
-    # balls.append(Ball("magenta", 100))
-    # balls.append(Ball("blue", 100))
-    raster = initialize_gitter()
-    for ped in walkers:
-        move(ped, raster)
-    for car in drivers:
-        move(car, raster)
-    tk.update()'''
-
+    #print_matrix(raster_old
+    raster_new = initialize_gitter()
+    raster_old = raster_new
     # schnelligkeit der Animation wird hier festgelegt
-
+    time.sleep(0.1)
     # print_matrix(raster)
 
 tk.mainloop
