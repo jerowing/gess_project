@@ -14,7 +14,7 @@ WIDTH = 1000
 HEIGHT = 1000
 units = 100  # setzt Feinheit der Koordinaten fest
 size = WIDTH / units
-t_display = 0.01    # Time displayed in window
+t_display = 0.1    # Time displayed in window
 
 
 # Malt Raster für Koordinatensystem (don't touch!!)
@@ -75,10 +75,10 @@ class Pedestrian:
             'crosswalk_L_R': 35,
             'crosswalk_M_L': 56,
             'crosswalk_M_R': 58,
-            'crosswalk_U_U': 68,
-            'crosswalk_U_B': 61,
-            'crosswalk_B_U': 68,
-            'crosswalk_B_B': 61
+            'crosswalk_U_U': 69,
+            'crosswalk_U_B': 59,
+            'crosswalk_B_U': 69,
+            'crosswalk_B_B': 59
         }
 
         # K: Dictionary für y-Startkoordinate des Fussgängers
@@ -99,10 +99,10 @@ class Pedestrian:
             'crosswalk_L_R': 35,
             'crosswalk_M_L': 56,
             'crosswalk_M_R': 58,
-            'crosswalk_U_U': 61,
-            'crosswalk_U_B': 68,
-            'crosswalk_B_U': 61,
-            'crosswalk_B_B': 68
+            'crosswalk_U_U': 59,
+            'crosswalk_U_B': 69,
+            'crosswalk_B_U': 59,
+            'crosswalk_B_B': 69
         }
 
         # K: Dictionary für y-Endkoordinate des Fussgängers
@@ -238,18 +238,28 @@ for i in range(9999):
     # Füllt n*3 Bälle in Liste
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Pedestrian(Weg)
-    if i%random.randint(99,1000) == 0:
+    if i%random.randint(99,100) == 0:
         walkers.append(Pedestrian("crosswalk_L_L"))
-    if i%random.randint(90,200) == 0:
+    if i%random.randint(50,60) == 0:
         walkers.append(Pedestrian("crosswalk_L_R"))
-    if i%random.randint(500,700) == 0:
+
+    if i%random.randint(100,200) == 0:
         walkers.append(Pedestrian("crosswalk_M_L"))
-    if i%random.randint(100,800) == 0:
+    if i%random.randint(100,150) == 0:
         walkers.append(Pedestrian("crosswalk_M_R"))
+
+    if i%random.randint(100,200) == 0:
+        walkers.append(Pedestrian("crosswalk_U_U"))
+    if i%random.randint(900,1000) == 0:
+        walkers.append(Pedestrian("crosswalk_U_B"))
+
+    if i%random.randint(20,40) == 0:
+        walkers.append(Pedestrian("crosswalk_B_U"))
+    if i%random.randint(80,120) == 0:
+        walkers.append(Pedestrian("crosswalk_B_B"))
+
     if i%random.randint(80,1000) == 0:
         drivers.append(Driver("red"))
-    # balls.append(Ball("green", 0))
-    # balls.append(Ball("black", 0))
 
     # Updates Time in display window
     t_display += 1
