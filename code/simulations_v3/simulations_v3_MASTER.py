@@ -259,9 +259,9 @@ time_label = Label(window, text="Time elapsed: ")
 time_label.place(x=10, y=WIDTH - 50)
 
 # K: sets the map in the background
-img = Image.open('map.gif')
+img = Image.open('map.gif')     # Hier den Hintergrund ändern
 backgr = ImageTk.PhotoImage(img)
-canvas_img = window.create_image(503, 500, image=backgr)
+canvas_img = window.create_image(501, 500, image=backgr)
 
 
 walkers = []

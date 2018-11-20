@@ -1,12 +1,14 @@
--Delete Pedestrians, die am Ziel angekommen sind (Nico)
--Indikator für wartende Fussgänger? (Leo)
--Tramhaltestellen (Leo)/Tramspur
+- Delete Pedestrians, die am Ziel angekommen sind (Nico)
+- Indikator für wartende Fussgänger? (Leo)
 
 Neue Todos von Pascal
-- x-Koordinate von crosswalk_U_U stimmt nicht mit Karte überein (Leo)
 !- Agents müssen auf Autos/Fussgänger Rücksicht nehmen (Nico)
 - Laufgeschwindigkeit Autos (doppelt) (Nico)
 - Gruppen von Fussgängern spawnen / Ampeln implementieren (Jerome)
 
 Writing
 - Outline
+
+Done
+- x-Koordinate von crosswalk_U_U stimmt nicht mit Karte überein (Leo)
+- Tramhaltestellen (Leo)/Tramspur
