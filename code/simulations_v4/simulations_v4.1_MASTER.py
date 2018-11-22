@@ -436,6 +436,21 @@ class Tram:
         # K: Create a list of Tram Waggons; first waggon of tram at tram_list[-1] and last waggon at tram_list[0]
         self.tram_list = []
 
+def rotlicht(number, matrix):
+
+    if number == 0:
+        #Keine Ampeln, alle Ampeln auf Grün
+        return matrix
+    if number == 1:
+        matrix[40][33] = 3
+        matrix[45][35] = 3
+        #Fussgänger müssen warten
+        #Matrix[x][y] = 3 für alle x,y welche direkt vor dem Fussgängerstreifen liegen aus Fussgänger sicht
+        return matrix
+    if number == 2:
+        return matrix
+        #Autos müssen warten:
+        #matrix[x][y] = 4 für alle x,y Koordinaten, welche sich direkt vor Fussgängerstreifen befinden aus Sicht von Autofahrern
 
 def move(agent, matrix):
     # Speichert die momentanen Koordinaten (old) sowie die Zukünftigen(new)
@@ -557,6 +572,7 @@ for i in range(9999):
     t_str = str(t_display)
     print_time(t_str)
 
+    raster = rotlicht(1,raster)
     # Iterate all agents for one time period
     iterate(walkers, raster)
     i = 1
