@@ -1,17 +1,17 @@
-- Delete Pedestrians, die am Ziel angekommen sind (Nico)
+Code:
 - Indikator für wartende Fussgänger? (Leo)
-- Rotlicht anzeigen
-
-Neue Todos von Pascal
 - Koordinaten für Ampeln hardcoden (freiwillige?)
-!- Agents müssen auf Autos/Fussgänger Rücksicht nehmen (Nico)
-- Laufgeschwindigkeit Autos (doppelt) (Nico)
 - Gruppen von Fussgängern spawnen (Jerome) 
-- Ampeln implementieren (Jerome)
 
-Writing
+Writing:
 - Outline
 
-Done
+
+DONE:
 - x-Koordinate von crosswalk_U_U stimmt nicht mit Karte überein (Leo)
 - Tramhaltestellen (Leo)/Tramspur
+- Rotlicht anzeigen
+- Laufgeschwindigkeit Autos (doppelt) (Nico)
+- Ampeln implementieren (Jerome)
+- Delete Pedestrians, die am Ziel angekommen sind (Nico)
+- Agents müssen auf Autos/Fussgänger Rücksicht nehmen (Nico)
