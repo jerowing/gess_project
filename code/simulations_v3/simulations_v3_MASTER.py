@@ -182,7 +182,15 @@ class Driver:
         #self.yspeed = 0
         self.shape = window.create_rectangle(self.cordx * size, self.cordy * size, self.cordx * size + size,
                                              self.cordy * size + size, fill='magenta')
-
+def rotlicht(number, matrix):
+    if number == 0:
+        return matrix
+    #Fussgänger müssen stehen bleiben
+    if number == 1:
+        #Koordinaten bevor der Fussgänger auf die Strasse läuft = 3
+    #Autos müssen am Fussgängerstreifen warten.
+    if number == 2:
+        #Koordinate bevor das Auto den Fussgängerstreifen überquert = 4 setzen
 
 def move(agent, matrix):
 
@@ -233,6 +241,11 @@ def move(agent, matrix):
                 matrix[x][y] = 2
             if isinstance(agent, Pedestrian):
                 matrix[x][y] = 1
+        else:
+            # Macht Zug rückgängig, so dass sich der Agent nicht bewegt
+            agent.cordx -= agent.xspeed
+            agent.cordy -= agent.yspeed
+            window.move(agent.shape, -agent.xspeed * size, - agent.yspeed * size)
 
         #matrix[x][y] += 1
         #return matrix
@@ -273,6 +286,7 @@ for i in range(9999):
     # Füllt n*3 Bälle in Liste
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Pedestrian(Weg)
+
     if i%random.randint(9,15) == 0:
         walkers.append(Pedestrian("crosswalk_L_L"))
     if i%random.randint(50,60) == 0:
@@ -310,6 +324,7 @@ for i in range(9999):
     # balls.append(Ball("magenta", 100))
     # balls.append(Ball("blue", 100))
     raster = initialize_gitter()
+    rotlicht(0, raster)
     for ped in walkers:
         move(ped, raster)
     for car in drivers:

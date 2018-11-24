@@ -439,18 +439,49 @@ class Tram:
 def rotlicht(number, matrix):
 
     if number == 0:
-        #Keine Ampeln, alle Ampeln auf Grün
+        matrix[41][33] = 0
+        matrix[45][35] = 0
+        matrix[41][56] = 0
+        matrix[45][58] = 0
+        matrix[39][62] = 0
+        matrix[37][67] = 0
+        matrix[69][62] = 0
+        matrix[67][67] = 0
+        matrix[42][36] = 0
+        matrix[42][59] = 0
+        matrix[36][63] = 0
+        matrix[40][66] = 0
+        matrix[70][66] = 0
+        matrix[66][63] = 0
         return matrix
     if number == 1:
-        matrix[40][33] = 3
+        matrix[41][33] = 3
         matrix[45][35] = 3
+        #crosswalk2
+        matrix[41][56] = 3
+        matrix[45][58] = 3
+        #crosswalk3
+        matrix[39][62] = 3
+        matrix[37][67] = 3
+        #crosswalk4
+        matrix[69][62] = 3
+        matrix[67][67] = 3
+
         #Fussgänger müssen warten
         #Matrix[x][y] = 3 für alle x,y welche direkt vor dem Fussgängerstreifen liegen aus Fussgänger sicht
         return matrix
     if number == 2:
+        #crosswalk1:
+        matrix[42][36] = 4
+        #crosswalk2
+        matrix[42][59] = 4
+        #crosswalk3
+        matrix[36][63] = 4
+        matrix[40][66] = 4
+        #crosswalk4
+        matrix[70][66] = 4
+        matrix[66][63] = 4
         return matrix
-        #Autos müssen warten:
-        #matrix[x][y] = 4 für alle x,y Koordinaten, welche sich direkt vor Fussgängerstreifen befinden aus Sicht von Autofahrern
 
 def move(agent, matrix):
     # Speichert die momentanen Koordinaten (old) sowie die Zukünftigen(new)
@@ -562,6 +593,7 @@ tram = []
 raster = initialize_gitter()
 
 for i in range(9999):
+
     # Creates new agents in the lists (including random startingpoints)
     spawn_tram(tram, i, raster)
     spawn_ped(walkers, i)
@@ -571,8 +603,11 @@ for i in range(9999):
     t_display += 1
     t_str = str(t_display)
     print_time(t_str)
-
-    raster = rotlicht(1,raster)
+    raster = rotlicht(0, raster)
+    if i % 20 <= 5:
+        ratster = rotlicht(1,raster)
+    else:
+        raster = rotlicht(2, raster)
     # Iterate all agents for one time period
     iterate(walkers, raster)
     i = 1
