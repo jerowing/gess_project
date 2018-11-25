@@ -1,7 +1,9 @@
 Code:
-- Indikator für wartende Fussgänger? (Leo)
-- Koordinaten für Ampeln hardcoden (freiwillige?)
-- Gruppen von Fussgängern spawnen (Jerome) 
+- Gruppen von Fussgängern spawnen (Jerome)
+- Globale Varibeln für Fussgänger- und Autodichte (Nico)
+- Frequenz für Trams anpassen (Nico)
+- Zeitanzeige in hh:mm:ss (Leo)
+
 
 Writing:
 - Outline
@@ -15,3 +17,5 @@ DONE:
 - Ampeln implementieren (Jerome)
 - Delete Pedestrians, die am Ziel angekommen sind (Nico)
 - Agents müssen auf Autos/Fussgänger Rücksicht nehmen (Nico)
+- Koordinaten für Ampeln hardcoden (freiwillige?)
+
