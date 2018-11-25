@@ -1,4 +1,6 @@
 Code:
+- Realistisches Szenario einrichten.
+- komisches Verhalten von Autos, wenn sich warten wegen Fussgänger und Ampeln überschneidet.
 - Gruppen von Fussgängern spawnen (Jerome)
 - Globale Varibeln für Fussgänger- und Autodichte (Nico)
 - Frequenz für Trams anpassen (Nico)
@@ -15,6 +17,7 @@ DONE:
 - Rotlicht anzeigen
 - Laufgeschwindigkeit Autos (doppelt) (Nico)
 - Ampeln implementieren (Jerome)
+- Ampeln funktionieren für Fussgängerschlangen
 - Delete Pedestrians, die am Ziel angekommen sind (Nico)
 - Agents müssen auf Autos/Fussgänger Rücksicht nehmen (Nico)
 - Koordinaten für Ampeln hardcoden (freiwillige?)
