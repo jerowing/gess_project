@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d67b28a2-0321-450c-a5b6-6633b3556584" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/code.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/code.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulations_v4/simulations_v4.1_MASTER.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulations_v4/simulations_v4.1_MASTER.py" afterDir="false" />
-    </list>
+    <list default="true" id="d67b28a2-0321-450c-a5b6-6633b3556584" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,7 +9,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/code$simulations_v4_1_MASTER.coverage" NAME="simulations_v4.1_MASTER Coverage Results" MODIFIED="1543148777720" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/simulations_v4" />
+    <SUITE FILE_PATH="coverage/code$simulations_v4_1_MASTER.coverage" NAME="simulations_v4.1_MASTER Coverage Results" MODIFIED="1543149128191" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/simulations_v4" />
     <SUITE FILE_PATH="coverage/code$simulations_v4_MASTER.coverage" NAME="simulations_v4_MASTER Coverage Results" MODIFIED="1543145982029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/simulations_v4" />
   </component>
   <component name="FileEditorManager">
@@ -174,12 +169,20 @@
       <option name="presentableId" value="Default" />
       <updated>1543057551933</updated>
       <workItem from="1543142666283" duration="2797000" />
-      <workItem from="1543145951015" duration="2863000" />
+      <workItem from="1543145951015" duration="2896000" />
     </task>
+    <task id="LOCAL-00001" summary="Ampelfunktion funktioniert auch für Fussgängerschlangen">
+      <created>1543148848067</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1543148848067</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5660000" />
+    <option name="totallyTimeSpent" value="5693000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
@@ -191,7 +194,7 @@
       <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.34341252" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.34341252" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39956802" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -211,6 +214,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Ampelfunktion funktioniert auch für Fussgängerschlangen" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ampelfunktion funktioniert auch für Fussgängerschlangen" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/tkinter/__init__.py" />

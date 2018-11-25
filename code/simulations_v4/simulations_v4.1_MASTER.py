@@ -505,11 +505,6 @@ def move(agent, matrix):
         agent.cordy = ym_new
         window.move(agent.shape, agent.xspeed * size, agent.yspeed * size)
 
-    if matrix[ym_old][xn_old] > 3:
-        if isinstance(agent, Pedestrian):
-            agent.cordx = agent.endx
-            agent.cordy = agent.endy
-        # Returns True if Agent is at endposition
     if agent.cordx == agent.endx and agent.cordy == agent.endy:
         return True
     else:
@@ -665,7 +660,7 @@ for i in range(9999):
     print_time(t_str)
     # Activates / Deactivates Red light
     raster = rotlicht(0, raster)
-    if i % 20 <= 5:
+    if i % 20 <= 12:
         raster = rotlicht(1, raster)
         # Setting traffic lights for when pedestrians have to wait
         light_ped_b = PhotoImage(file='lights/red_bottom.gif')
