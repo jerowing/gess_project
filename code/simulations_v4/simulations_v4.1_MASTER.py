@@ -57,25 +57,26 @@ def speed(agent):
 def spawn_ped(walkers, i):
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Pedestrian(Weg)
-    if i % random.randint(10, 40) == 0:
-        walkers.append(Pedestrian("crosswalk_L_L"))
-    if i % random.randint(50, 60) == 0:
-        walkers.append(Pedestrian("crosswalk_L_R"))
+    for k in range(15):
+        if i % random.randint(10, 40) == 0:
+            walkers.append(Pedestrian("crosswalk_L_L"))
+        if i % random.randint(50, 60) == 0:
+            walkers.append(Pedestrian("crosswalk_L_R"))
 
-    if i % random.randint(10, 40) == 0:
-        walkers.append(Pedestrian("crosswalk_M_L"))
-    if i % random.randint(10, 40) == 0:
-        walkers.append(Pedestrian("crosswalk_M_R"))
+        if i % random.randint(10, 40) == 0:
+            walkers.append(Pedestrian("crosswalk_M_L"))
+        if i % random.randint(10, 40) == 0:
+            walkers.append(Pedestrian("crosswalk_M_R"))
 
-    if i % random.randint(10, 40) == 0:
-        walkers.append(Pedestrian("crosswalk_U_U"))
-    if i % random.randint(10, 40) == 0:
-        walkers.append(Pedestrian("crosswalk_U_B"))
+        if i % random.randint(10, 40) == 0:
+            walkers.append(Pedestrian("crosswalk_U_U"))
+        if i % random.randint(10, 40) == 0:
+            walkers.append(Pedestrian("crosswalk_U_B"))
 
-    if i % random.randint(20, 40) == 0:
-        walkers.append(Pedestrian("crosswalk_B_U"))
-    if i % random.randint(20, 120) == 0:
-        walkers.append(Pedestrian("crosswalk_B_B"))
+        if i % random.randint(20, 40) == 0:
+            walkers.append(Pedestrian("crosswalk_B_U"))
+        if i % random.randint(20, 120) == 0:
+            walkers.append(Pedestrian("crosswalk_B_B"))
 
 
 def spawn_cars(drivers, i):
@@ -306,8 +307,8 @@ class Driver:
         self.endy = self.endposy[path]
 
         # K: Position of Agent
-        self.cordx= self.startx
-        self.cordy= self.starty
+        self.cordx = self.startx
+        self.cordy = self.starty
 
         # K: Determine Direction/Speed of agent
         self.xspeed, self.yspeed = speed(self)
@@ -455,32 +456,32 @@ def rotlicht(number, matrix):
         matrix[66][63] = 0
         return matrix
     if number == 1:
-        matrix[41][33] = 3
-        matrix[45][35] = 3
+        matrix[41][33] = 4
+        matrix[45][35] = 4
         #crosswalk2
-        matrix[41][56] = 3
-        matrix[45][58] = 3
+        matrix[41][56] = 4
+        matrix[45][58] = 4
         #crosswalk3
-        matrix[39][62] = 3
-        matrix[37][67] = 3
+        matrix[39][62] = 4
+        matrix[37][67] = 4
         #crosswalk4
-        matrix[69][62] = 3
-        matrix[67][67] = 3
+        matrix[69][62] = 4
+        matrix[67][67] = 4
 
         #Fussgänger müssen warten
         #Matrix[x][y] = 3 für alle x,y welche direkt vor dem Fussgängerstreifen liegen aus Fussgänger sicht
         return matrix
     if number == 2:
         #crosswalk1:
-        matrix[42][36] = 4
-        #crosswalk2
-        matrix[42][59] = 4
+        matrix[42][36] = 5
+        #crosswalk
+        matrix[42][59] = 5
         #crosswalk3
-        matrix[36][63] = 4
-        matrix[40][66] = 4
-        #crosswalk4
-        matrix[70][66] = 4
-        matrix[66][63] = 4
+        matrix[36][63] = 5
+        matrix[40][66] = 5
+        #crosswalk
+        matrix[70][66] = 5
+        matrix[66][63] = 5
         return matrix
 
 def move(agent, matrix):
@@ -490,9 +491,12 @@ def move(agent, matrix):
     ym_old = agent.cordy
     ym_new = agent.cordy + agent.yspeed
 
+
     # Falls die new-Koordinate in der Matrix unbesetzt ist, darf der Agent ein Feld weiter. Ansonsten bleibt er stehen.
     if matrix[ym_new][xn_new] == 0:
-        matrix[ym_old][xn_old] = 0
+        if matrix[ym_old][xn_old] <= 3:
+            #Ampeln dürfen nicht überschrieben werden!
+            matrix[ym_old][xn_old] = 0
         if isinstance(agent, Driver):
             matrix[ym_new][xn_new] = 2
         if isinstance(agent, Pedestrian):
@@ -501,7 +505,11 @@ def move(agent, matrix):
         agent.cordy = ym_new
         window.move(agent.shape, agent.xspeed * size, agent.yspeed * size)
 
-    # Returns True if Agent is at endposition
+    if matrix[ym_old][xn_old] > 3:
+        if isinstance(agent, Pedestrian):
+            agent.cordx = agent.endx
+            agent.cordy = agent.endy
+        # Returns True if Agent is at endposition
     if agent.cordx == agent.endx and agent.cordy == agent.endy:
         return True
     else:
