@@ -18,6 +18,14 @@ animation_speed = 0.05
 car_speed = 6
 # LENGTH OF TRAM
 tram_length = 8
+# TIME DISPLAY
+t_s = 0
+t_min = 0
+t_h = 0
+# PEDESTRIANS WAITING
+waiting_ped = {'crosswalk_L_L': 0, 'crosswalk_L_R': 0, 'crosswalk_M_L': 0,
+               'crosswalk_M_R': 0, 'crosswalk_U_U': 0, 'crosswalk_U_B': 0,
+               'crosswalk_B_U': 0, 'crosswalk_B_B': 0}
 
 
 def schachbrett(canvas):
@@ -209,6 +217,11 @@ class Pedestrian:
             'crosswalk_B_B': 59
         }
 
+        self.class_ = "Pedestrian"
+
+        # K: Stores Path of Pedestrian
+        self.path = path
+
         # K: Dictionary für y-Startkoordinate des Fussgängers
         self.startposy = {
             'crosswalk_L_L': 38,
@@ -279,6 +292,8 @@ class Driver:
             'car_left_turn': 0
         }
 
+        self.class_ = 'Driver'
+
         # K: Dictionary für Y-STARTkoordinate des Cars
         self.startposy = {
             'car_L': 0,
@@ -336,6 +351,8 @@ class Tram:
             '10_Haldenbach': 64,
             '10_Polybahn': tram_length - 1,
         }
+
+        self.class_ = "Tram"
 
         # K: Dictionary für Y-STARTkoordinate des Trams
         self.startposy = {
@@ -491,7 +508,6 @@ def move(agent, matrix):
     ym_old = agent.cordy
     ym_new = agent.cordy + agent.yspeed
 
-
     # Falls die new-Koordinate in der Matrix unbesetzt ist, darf der Agent ein Feld weiter. Ansonsten bleibt er stehen.
     if matrix[ym_new][xn_new] == 0:
         if matrix[ym_old][xn_old] <= 3:
@@ -504,6 +520,9 @@ def move(agent, matrix):
         agent.cordx = xn_new
         agent.cordy = ym_new
         window.move(agent.shape, agent.xspeed * size, agent.yspeed * size)
+
+    if agent.class_ == 'Pedestrian' and agent.starty == agent.cordy and agent.startx == agent.cordx:
+        waiting_ped[agent.path] += 1
 
     if agent.cordx == agent.endx and agent.cordy == agent.endy:
         return True
@@ -563,11 +582,26 @@ def move_tram(agent, matrix):
     return False
 
 
-def print_time(t):
-    """ updates the current time displayed in the window"""
+def print_time(s_i, min_i, h_i):
+    """
+    Updates the current time displayed in the window
+        Input: s, min, h as integers
+    """
     time_label = Label(window, text="Time elapsed: ")
     time_label.place(x=50, y=50)
-    current_time = Label(window, text=t)
+    if s_i < 10:
+        s = '0'+str(s_i)
+    else:
+        s = str(s_i)
+    if min_i < 10:
+        minute = '0'+str(min_i)
+    else:
+        minute = str(min_i)
+    if h_i < 10:
+        h = '0'+str(h_i)
+    else:
+        h = str(h_i)
+    current_time = Label(window, text=(h, ':', minute, ':', s))
     current_time.place(x=145, y=50)
 
 
@@ -624,6 +658,28 @@ def draw_lights(number):
         cwp_b_l = Label(window, image=light_ped_r)
         cwp_b_l.place(x=590, y=701)
 
+
+def display_waiters(waiters):
+    w_ll = Label(window, text=str(waiters['crosswalk_L_L']))
+    w_ll.place(x=330, y=350)
+    w_lr = Label(window, text=str(waiters['crosswalk_L_R']))
+    w_lr.place(x=349, y=495)
+
+    w_ml = Label(window, text=str(waiters['crosswalk_M_L']))
+    w_ml.place(x=550, y=350)
+    w_mr = Label(window, text=str(waiters['crosswalk_M_R']))
+    w_mr.place(x=580, y=495)
+
+    w_uu = Label(window, text=str(waiters['crosswalk_U_U']))
+    w_uu.place(x=705, y=365)
+    w_ub = Label(window, text=str(waiters['crosswalk_U_B']))
+    w_ub.place(x=590, y=370)
+
+    w_bu = Label(window, text=str(waiters['crosswalk_B_U']))
+    w_bu.place(x=710, y=665)
+    w_bb = Label(window, text=str(waiters['crosswalk_B_B']))
+    w_bb.place(x=565, y=685)
+
 # ------------------------------------------ Beginn "Main function" -------------------------------------------
 
 
@@ -633,8 +689,6 @@ window = Canvas(tk, width=LENGTH, height=LENGTH)
 schachbrett(window)
 tk.title("simulation_try4")
 window.pack()
-
-
 # K: sets the map in the background
 img = Image.open('map_nico.gif')
 backgr = ImageTk.PhotoImage(img)
@@ -654,10 +708,21 @@ for i in range(9999):
     spawn_ped(walkers, i)
     spawn_cars(drivers, i)
 
+    print(waiting_ped)
+    display_waiters(waiting_ped)
+    waiting_ped = {'crosswalk_L_L': 0, 'crosswalk_L_R': 0, 'crosswalk_M_L': 0,
+                   'crosswalk_M_R': 0, 'crosswalk_U_U': 0, 'crosswalk_U_B': 0,
+                   'crosswalk_B_U': 0, 'crosswalk_B_B': 0}
+
     # Updates Time in display window
-    t_display += 1
-    t_str = str(t_display)
-    print_time(t_str)
+    t_s += 1
+    if t_s >= 60:
+        t_min += 1
+        t_s = 0
+    if t_min >= 60:
+        t_h += 1
+        t_min = 0
+    print_time(t_s, t_min, t_h)
     # Activates / Deactivates Red light
     raster = rotlicht(0, raster)
     if i % 20 <= 12:
@@ -684,7 +749,6 @@ for i in range(9999):
         cwp_b_r.place(x=675, y=645)
         cwp_b_l = Label(window, image=light_ped_r)
         cwp_b_l.place(x=590, y=701)
-
 
     else:
         raster = rotlicht(2, raster)
