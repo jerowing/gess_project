@@ -1,0 +1,15 @@
+Simulation Scenarios:
+
+Ohne Ampeln:
+	- Stosszeiten
+	- Nicht Stosszeiten
+
+Mit Ampeln:
+	- Stosszeiten 
+	- Nicht Stosszeiten
+
+Zeiten:
+	Viele Fussgänger, mässig Autos
+	Viel Autos, wenig Fussgänger
+	Viele Autos, viele Fussgänger
+	Wenige Autos, wenige Fussgänger
