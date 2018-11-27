@@ -716,7 +716,6 @@ with open('values.csv', 'w') as f:
         spawn_ped(walkers, i)
         spawn_cars(drivers, i)
 
-        print(waiting_ped)
         display_waiters(waiting_ped)
         waiting_ped['time_t'] += 1
         temp_time = waiting_ped['time_t']
