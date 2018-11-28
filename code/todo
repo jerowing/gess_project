@@ -1,10 +1,11 @@
 Code:
-- Realistisches Szenario einrichten.
+- Realistisches Szenario einrichten (Pascal)
 - komisches Verhalten von Autos, wenn sich warten wegen Fussgänger und Ampeln überschneidet.
-- Gruppen von Fussgängern spawnen (Jerome)
 - Globale Varibeln für Fussgänger- und Autodichte (Nico)
 - Frequenz für Trams anpassen (Nico)
-- Zeitanzeige in hh:mm:ss (Leo)
+- Save Pedestrian Values to output
+- Wartende Autos zählen und Ausgeben (Nico) / (Jérome)
+- Diagramme (Jérome)
 
 
 Writing:
@@ -22,4 +23,7 @@ DONE:
 - Delete Pedestrians, die am Ziel angekommen sind (Nico)
 - Agents müssen auf Autos/Fussgänger Rücksicht nehmen (Nico)
 - Koordinaten für Ampeln hardcoden (freiwillige?)
+- Zeitanzeige in hh:mm:ss (Leo)
+- Gruppen von Fussgängern spawnen (Jerome)
+- CSV output (Leo)
 
