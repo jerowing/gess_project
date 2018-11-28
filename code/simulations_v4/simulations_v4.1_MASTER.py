@@ -19,6 +19,12 @@ animation_speed = 0.05
 car_speed = 6
 # LENGTH OF TRAM
 tram_length = 8
+# [Chance, Amount] of Pedestrians spawned (per second)
+amount_ped = {'crosswalk_L_L': [10, 2], 'crosswalk_L_R': [10, 2],
+               'crosswalk_M_L': [20, 3], 'crosswalk_M_R': [20, 3], 'crosswalk_U_U': [25, 2],
+               'crosswalk_U_B': [25, 2], 'crosswalk_B_U': [50, 1], 'crosswalk_B_B': [50, 1]}
+# [Chance, Amount] of Cars spawned (per second)
+amount_car = {'car_L': [50, 3], 'car_R': [50, 3]}
 # TIME DISPLAY
 t_s = 0
 t_min = 0
@@ -68,35 +74,49 @@ def speed(agent):
 def spawn_ped(walkers, i):
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Pedestrian(Weg)
-    for k in range(15):
-        if i % random.randint(10, 40) == 0:
+    for k in range(0, amount_ped["crosswalk_L_L"][1]):
+        if random.randint(1, 101) <= amount_ped["crosswalk_L_L"][0]:
             walkers.append(Pedestrian("crosswalk_L_L"))
-        if i % random.randint(50, 60) == 0:
+
+    for k in range(0, amount_ped["crosswalk_L_R"][1]):
+        if random.randint(1, 101) <= amount_ped["crosswalk_L_R"][0]:
             walkers.append(Pedestrian("crosswalk_L_R"))
 
-        if i % random.randint(10, 40) == 0:
+    for k in range(0, amount_ped["crosswalk_M_L"][1]):
+        if random.randint(1, 101) <= amount_ped["crosswalk_M_L"][0]:
             walkers.append(Pedestrian("crosswalk_M_L"))
-        if i % random.randint(10, 40) == 0:
+
+    for k in range(0, amount_ped["crosswalk_M_R"][1]):
+        if random.randint(1, 101) <= amount_ped["crosswalk_M_R"][0]:
             walkers.append(Pedestrian("crosswalk_M_R"))
 
-        if i % random.randint(10, 40) == 0:
+    for k in range(0, amount_ped["crosswalk_U_U"][1]):
+        if random.randint(1, 101) <= amount_ped["crosswalk_U_U"][0]:
             walkers.append(Pedestrian("crosswalk_U_U"))
-        if i % random.randint(10, 40) == 0:
+
+    for k in range(0, amount_ped["crosswalk_U_B"][1]):
+        if random.randint(1, 101) <= amount_ped["crosswalk_U_B"][0]:
             walkers.append(Pedestrian("crosswalk_U_B"))
 
-        if i % random.randint(20, 40) == 0:
+    for k in range(0, amount_ped["crosswalk_B_U"][1]):
+        if random.randint(1, 101) <= amount_ped["crosswalk_B_U"][0]:
             walkers.append(Pedestrian("crosswalk_B_U"))
-        if i % random.randint(20, 120) == 0:
+
+    for k in range(0, amount_ped["crosswalk_B_B"][1]):
+        if random.randint(1, 101) <= amount_ped["crosswalk_B_B"][0]:
             walkers.append(Pedestrian("crosswalk_B_B"))
 
 
 def spawn_cars(drivers, i):
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Car(Weg)
-    if i % random.randint(2, 5) == 0:
-        drivers.append(Driver("car_L"))
-    if i % random.randint(3, 4) == 0:
-        drivers.append(Driver("car_R"))
+    for k in range(0, amount_car["car_L"][1]):
+        if random.randint(1, 101) <= amount_car["car_L"][0]:
+            drivers.append(Driver("car_L"))
+
+    for k in range(0, amount_car["car_R"][1]):
+        if random.randint(1, 101) <= amount_car["car_R"][0]:
+            drivers.append(Driver("car_R"))
 
 
 def spawn_tram_raster(tram, str, raster):
@@ -288,41 +308,53 @@ class Driver:
         #    car_R car      driving on the right lane -> downwards
         #    car_left_turn   driving on the left lane until crossroad then left turn
 
+        self.class_ = 'Driver'
+
         # K: Dictionary für X-STARTkoordinate des Cars
         self.startposx = {
             'car_L': 63,
             'car_R': 66,
-            'car_left_turn': 0
         }
-
-        self.class_ = 'Driver'
 
         # K: Dictionary für Y-STARTkoordinate des Cars
         self.startposy = {
             'car_L': 0,
             'car_R': 99,
-            'car_left_turn': 0
+        }
+
+        self.middleposx = {
+            'car_L': 63,
+            'car_R': 66,
+        }
+
+        self.middleposy = {
+            'car_L': 42,
+            'car_R': 42,
         }
 
         # K: Dictionary für X-ENDkoordinate des Cars
         self.endposx = {
             'car_L': 63,
             'car_R': 66,
-            'car_left_turn': 55
         }
 
         # K: Dictionary für Y-ENDkoordinate des Cars
         self.endposy = {
             'car_L': 99,
             'car_R': 0,
-            'car_left_turn': 0
         }
+
+        self.path = path
 
         # K: Start und Endpunkt
         self.startx = self.startposx[path]
         self.starty = self.startposy[path]
-        self.endx = self.endposx[path]
-        self.endy = self.endposy[path]
+        if random.randint(0, 30) == 5:
+            self.endx = self.middleposx[path]
+            self.endy = self.middleposy[path]
+        else:
+            self.endx = self.endposx[path]
+            self.endy = self.endposy[path]
 
         # K: Position of Agent
         self.cordx = self.startx
@@ -529,6 +561,16 @@ def move(agent, matrix):
     if agent.class_ == 'Pedestrian' and agent.starty == agent.cordy and agent.startx == agent.cordx:
         waiting_ped[agent.path] += 1
 
+    # Returns True if Car is at Endposition or Changes speed if it is at the middleposition
+    if isinstance(agent, Driver):
+        if agent.cordx == agent.endx and agent.cordy == agent.endy:
+            if agent.cordx == agent.middleposx[agent.path] and agent.cordy == agent.middleposy[agent.path]:
+                agent.endx = 0
+                agent.endy = 42
+                agent.xspeed, agent.yspeed = speed(agent)
+            else:
+                return True
+
     if agent.cordx == agent.endx and agent.cordy == agent.endy:
         return True
     else:
@@ -614,7 +656,6 @@ def draw_lights(number):
     """
     Draws traffic lights in Canvas:
      1 = pedestrians WAIT
-
      2 = pedestrians GO
     """
     if number == 1:
@@ -686,6 +727,31 @@ def display_waiters(waiters):
     w_bb.place(x=565, y=685)
 
 
+def count_cars_waiting(raster, str):
+    waiting_cars = 0
+    if str == 'L_U':
+        i = 35
+        while raster[i][63] == 2:
+            waiting_cars += 1
+            i -= 1
+    if str == 'L_B':
+        i = 65
+        while raster[i][63] == 2:
+            waiting_cars += 1
+            i -= 1
+    if str == 'R_U':
+        i = 42
+        while raster[i][66] == 2:
+            waiting_cars += 1
+            i += 1
+    if str == 'R_B':
+        i = 71
+        while raster[i][66] == 2:
+            waiting_cars += 1
+            i += 1
+    return waiting_cars
+
+
 """ ------------------------------------------ Begin "Main function" ------------------------------------------- """
 # K: öffnet neues Fenster und initialisiert Koordinatenraster
 tk = Tk()
@@ -725,6 +791,14 @@ with open('values.csv', 'w') as f:
                        'crosswalk_U_B': 0, 'crosswalk_B_U': 0, 'crosswalk_B_B': 0,
                        'cars_L': 0, 'cars_M': 0, 'cars_U_U': 0, 'cars_U_B': 0,
                        'cars_B_U': 0, 'cars_B_B': 0}
+
+        # Zählt Anzahl Autos in der Warteschlange
+        cars_waiting_L_U = count_cars_waiting(raster, "L_U")
+        cars_waiting_L_B = count_cars_waiting(raster, "L_B")
+        cars_waiting_R_U = count_cars_waiting(raster, "R_U")
+        cars_waiting_R_B = count_cars_waiting(raster, "R_B")
+        print("Warteschlange: L_U: " + str(cars_waiting_L_U) + "  L_B: " + str(cars_waiting_L_B) + "  R_U: " +
+              str(cars_waiting_R_U) + "  R_B: " + str(cars_waiting_R_B))
 
         # Updates Time in display window
         t_s += 1
@@ -797,6 +871,8 @@ with open('values.csv', 'w') as f:
             tk.update()
             time.sleep(animation_speed)
             i += 1
+
+            #print(raster[:, 42])
 
 
 tk.mainloop
