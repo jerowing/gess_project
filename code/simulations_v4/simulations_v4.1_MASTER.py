@@ -19,12 +19,13 @@ animation_speed = 0.05
 car_speed = 6
 # LENGTH OF TRAM
 tram_length = 8
+
 # [Chance, Amount] of Pedestrians spawned (per second)
-amount_ped = {'crosswalk_L_L': [10, 2], 'crosswalk_L_R': [10, 2],
-               'crosswalk_M_L': [20, 3], 'crosswalk_M_R': [20, 3], 'crosswalk_U_U': [25, 2],
-               'crosswalk_U_B': [25, 2], 'crosswalk_B_U': [50, 1], 'crosswalk_B_B': [50, 1]}
+amount_ped = {'crosswalk_L_L': [10, 3], 'crosswalk_L_R': [10, 3],
+               'crosswalk_M_L': [10, 4], 'crosswalk_M_R': [10, 4], 'crosswalk_U_U': [20, 3],
+               'crosswalk_U_B': [15, 3], 'crosswalk_B_U': [10, 2], 'crosswalk_B_B': [10, 2]}
 # [Chance, Amount] of Cars spawned (per second)
-amount_car = {'car_L': [50, 3], 'car_R': [50, 3]}
+amount_car = {'car_L': [20, 5], 'car_R': [20, 6]}
 # TIME DISPLAY
 t_s = 0
 t_min = 0
@@ -33,9 +34,14 @@ t_h = 0
 waiting_ped = {'time_t': 0, 'crosswalk_L_L': 0, 'crosswalk_L_R': 0,
                'crosswalk_M_L': 0, 'crosswalk_M_R': 0, 'crosswalk_U_U': 0,
                'crosswalk_U_B': 0, 'crosswalk_B_U': 0, 'crosswalk_B_B': 0,
-               'cars_L': 0, 'cars_M': 0, 'cars_U_U': 0, 'cars_U_B': 0,
-               'cars_B_U': 0, 'cars_B_B': 0}
+               'cars_L': 0, 'cars_R': 0}
 
+waiting_ped2 = {'time': waiting_ped['time_t'],
+                        'crosswalk_L' : waiting_ped['crosswalk_L_R'] + waiting_ped['crosswalk_L_L'],
+                        'crosswalk_R' : waiting_ped['crosswalk_M_L'] + waiting_ped['crosswalk_M_R'],
+                        'crosswalk_U' : waiting_ped['crosswalk_U_U'] + waiting_ped['crosswalk_U_B'],
+                        'crosswalk_B' : waiting_ped['crosswalk_B_B'] + waiting_ped['crosswalk_B_U'],
+                        'cars_L' : waiting_ped['cars_L'], 'cars_R': waiting_ped['cars_R'] }
 
 def schachbrett(canvas):
     for x in range(LENGTH):
@@ -43,19 +49,16 @@ def schachbrett(canvas):
     for y in range(LENGTH):
         canvas.create_line(0, size * y, LENGTH, size * y, fill="#476042")
 
-
 def initialize_gitter():
     # Initialisiert Koordinatenmatrix mit Nullen-Einträgen
     matrix = array(zeros((units, units)), dtype=int)
     return matrix
-
 
 def print_matrix(matrix):
     # K: Funktioniert nur für Matrizen mit Höhe height
     # K: Grenze so anpassen, dass beliebige Matrizen verwendet werden können?
     print("Matrixprinter at time: ", t_display)
     print(matrix)
-
 
 def speed(agent):
     xspeed = 0
@@ -69,7 +72,6 @@ def speed(agent):
     if agent.cordy > agent.endy:
         yspeed = -1
     return xspeed, yspeed
-
 
 def spawn_ped(walkers, i):
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
@@ -106,7 +108,6 @@ def spawn_ped(walkers, i):
         if random.randint(1, 101) <= amount_ped["crosswalk_B_B"][0]:
             walkers.append(Pedestrian("crosswalk_B_B"))
 
-
 def spawn_cars(drivers, i):
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Car(Weg)
@@ -117,7 +118,6 @@ def spawn_cars(drivers, i):
     for k in range(0, amount_car["car_R"][1]):
         if random.randint(1, 101) <= amount_car["car_R"][0]:
             drivers.append(Driver("car_R"))
-
 
 def spawn_tram_raster(tram, str, raster):
     # Spawns the new tram in Raster and on Window
@@ -138,7 +138,6 @@ def spawn_tram_raster(tram, str, raster):
                 window.create_rectangle((agent.cordx_last + n * agent.xspeed) * size + 3, agent.cordy * size,
                                         (agent.cordx_last + n * agent.xspeed + 1) * size + 2, (agent.cordy + 1) * size,
                                         fill='blue'))
-
 
 def spawn_tram(tram, i, raster):
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
@@ -167,7 +166,6 @@ def spawn_tram(tram, i, raster):
     if (i + 20) % 120 == 0:
         tram.append(Tram("10_Polybahn"))
         spawn_tram_raster(tram, "horizontal", raster)
-
 
 def iterate(list, raster):
     # A whole list gets updated => Each agent in that list gets to move (order: from first to last)
@@ -212,7 +210,6 @@ def iterate(list, raster):
             else:
                 iterator += 1
     return False
-
 
 class Pedestrian:
     def __init__(self, path):
@@ -297,7 +294,6 @@ class Pedestrian:
         self.shape = window.create_oval(self.cordx * size + 3, self.cordy * size, self.cordx * size + size + 2,
                                         self.cordy * size + size, fill='green')
 
-
 class Driver:
     def __init__(self, path):
         # K: Initialisierung ggf ergänzen mit Startkoordinaten
@@ -365,7 +361,6 @@ class Driver:
 
         self.shape = window.create_rectangle(self.cordx * size + 3, self.cordy * size, self.cordx * size + size + 2,
                                              self.cordy * size + size, fill='magenta')
-
 
 class Tram:
     def __init__(self, number):
@@ -489,7 +484,6 @@ class Tram:
         # K: Create a list of Tram Waggons; first waggon of tram at tram_list[-1] and last waggon at tram_list[0]
         self.tram_list = []
 
-
 def rotlicht(number, matrix):
 
     if number == 0:
@@ -537,7 +531,6 @@ def rotlicht(number, matrix):
         matrix[66][63] = 5
         return matrix
 
-
 def move(agent, matrix):
     # Speichert die momentanen Koordinaten (old) sowie die Zukünftigen(new)
     xn_old = agent.cordx
@@ -548,7 +541,7 @@ def move(agent, matrix):
     # Falls die new-Koordinate in der Matrix unbesetzt ist, darf der Agent ein Feld weiter. Ansonsten bleibt er stehen.
     if matrix[ym_new][xn_new] == 0:
         if matrix[ym_old][xn_old] <= 3:
-            #Ampeln dürfen nicht überschrieben werden!
+            #Ampeln dürfen nicht überschrieben werden
             matrix[ym_old][xn_old] = 0
         if isinstance(agent, Driver):
             matrix[ym_new][xn_new] = 2
@@ -575,7 +568,6 @@ def move(agent, matrix):
         return True
     else:
         return False
-
 
 def move_tram(agent, matrix):
     # Speichert Tram-Nummer
@@ -628,7 +620,6 @@ def move_tram(agent, matrix):
                                                        (agent.cordy + 1) * size, fill='blue'))
     return False
 
-
 def print_time(s_i, min_i, h_i):
     """
     Updates the current time displayed in the window
@@ -650,7 +641,6 @@ def print_time(s_i, min_i, h_i):
         h = str(h_i)
     current_time = Label(window, text=(h, ':', minute, ':', s))
     current_time.place(x=145, y=50)
-
 
 def draw_lights(number):
     """
@@ -704,7 +694,6 @@ def draw_lights(number):
         cwp_b_l = Label(window, image=light_ped_r)
         cwp_b_l.place(x=590, y=701)
 
-
 def display_waiters(waiters):
     w_ll = Label(window, text=str(waiters['crosswalk_L_L']))
     w_ll.place(x=330, y=350)
@@ -725,7 +714,6 @@ def display_waiters(waiters):
     w_bu.place(x=710, y=665)
     w_bb = Label(window, text=str(waiters['crosswalk_B_B']))
     w_bb.place(x=565, y=685)
-
 
 def count_cars_waiting(raster, str):
     waiting_cars = 0
@@ -772,10 +760,10 @@ tram = []
 raster = initialize_gitter()
 
 with open('values.csv', 'w') as f:
-    w = csv.DictWriter(f, waiting_ped.keys())
+    w = csv.DictWriter(f, waiting_ped2.keys())
     w.writeheader()
 
-    for i in range(9999):
+    for i in range(1800):
 
         # Creates new agents in the lists (including random startingpoints)
         spawn_tram(tram, i, raster)
@@ -785,20 +773,25 @@ with open('values.csv', 'w') as f:
         display_waiters(waiting_ped)
         waiting_ped['time_t'] += 1
         temp_time = waiting_ped['time_t']
-        w.writerow(waiting_ped)
         waiting_ped = {'time_t': temp_time, 'crosswalk_L_L': 0, 'crosswalk_L_R': 0,
                        'crosswalk_M_L': 0, 'crosswalk_M_R': 0, 'crosswalk_U_U': 0,
                        'crosswalk_U_B': 0, 'crosswalk_B_U': 0, 'crosswalk_B_B': 0,
                        'cars_L': 0, 'cars_M': 0, 'cars_U_U': 0, 'cars_U_B': 0,
                        'cars_B_U': 0, 'cars_B_B': 0}
+        
+        w.writerow(waiting_ped2)
+        waiting_ped = {'time_t': temp_time, 'crosswalk_L_L': 0, 'crosswalk_L_R': 0,
+                       'crosswalk_M_L': 0, 'crosswalk_M_R': 0, 'crosswalk_U_U': 0,
+                       'crosswalk_U_B': 0, 'crosswalk_B_U': 0, 'crosswalk_B_B': 0,
+                       'cars_L': 0, 'cars_R': 0}
 
-        # Zählt Anzahl Autos in der Warteschlange
+        #Zählt Anzahl Autos in der Warteschlange
         cars_waiting_L_U = count_cars_waiting(raster, "L_U")
         cars_waiting_L_B = count_cars_waiting(raster, "L_B")
         cars_waiting_R_U = count_cars_waiting(raster, "R_U")
         cars_waiting_R_B = count_cars_waiting(raster, "R_B")
-        print("Warteschlange: L_U: " + str(cars_waiting_L_U) + "  L_B: " + str(cars_waiting_L_B) + "  R_U: " +
-              str(cars_waiting_R_U) + "  R_B: " + str(cars_waiting_R_B))
+        #print("Warteschlange: L_U: " + str(cars_waiting_L_U) + "  L_B: " + str(cars_waiting_L_B) + "  R_U: " +
+        #     str(cars_waiting_R_U) + "  R_B: " + str(cars_waiting_R_B))
 
         # Updates Time in display window
         t_s += 1
@@ -810,15 +803,15 @@ with open('values.csv', 'w') as f:
             t_min = 0
         print_time(t_s, t_min, t_h)
         # Activates / Deactivates Red light
-        raster = rotlicht(0, raster)
-        if i % 20 <= 12:
+        if i % 60 == 0:
+            raster = rotlicht(0, raster)
             raster = rotlicht(1, raster)
             # Setting traffic lights for when pedestrians have to wait
             light_ped_b = PhotoImage(file='lights/red_bottom.gif')
             light_ped_t = PhotoImage(file='lights/red_top.gif')
             light_ped_r = PhotoImage(file='lights/red_right.gif')
             light_ped_l = PhotoImage(file='lights/red_left.gif')
-
+    
             cwp_l_l = Label(window, image=light_ped_b)
             cwp_l_l.place(x=310, y=375)
             cwp_l_r = Label(window, image=light_ped_t)
@@ -836,9 +829,10 @@ with open('values.csv', 'w') as f:
             cwp_b_l = Label(window, image=light_ped_r)
             cwp_b_l.place(x=590, y=701)
 
-        else:
+        if i % 60 == 20:
+            raster = rotlicht(0, raster)
             raster = rotlicht(2, raster)
-            # setting traffic lights for when pedestrians can walk
+            #setting traffic lights for when pedestrians can walk
             light_ped_b = PhotoImage(file='lights/green_bottom.gif')
             light_ped_t = PhotoImage(file='lights/green_top.gif')
             light_ped_r = PhotoImage(file='lights/green_right.gif')
@@ -860,6 +854,7 @@ with open('values.csv', 'w') as f:
             cwp_b_r.place(x=675, y=645)
             cwp_b_l = Label(window, image=light_ped_r)
             cwp_b_l.place(x=590, y=701)
+
         # Iterate all agents for one time period
         iterate(walkers, raster)
         i = 1
