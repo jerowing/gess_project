@@ -6,7 +6,8 @@ import time
 from PIL import ImageTk, Image
 import csv
 
-# K: GLOBAL VARIABLES
+""" ---------------------------------------------- GLOBAL VARIABLES --------------------------------------------- """
+
 # Height/Width of window:
 LENGTH = 1000
 # Squares horizontally/vertically:
@@ -14,22 +15,31 @@ units = 100
 # Sidelength of squares:
 size = LENGTH / units
 # SPEED OF ANIMATION:
-animation_speed = 0.05
+animation_speed = 0.01
+maxspeed = True
+
 # SPEED OF CARS is "car_speed" times as fast as a pedestrian:
 car_speed = 6
 # LENGTH OF TRAM
 tram_length = 8
 
-# [Chance, Amount] of Pedestrians spawned (per second)
-amount_ped = {'crosswalk_L_L': [10, 3], 'crosswalk_L_R': [10, 3],
-               'crosswalk_M_L': [10, 4], 'crosswalk_M_R': [10, 4], 'crosswalk_U_U': [20, 3],
-               'crosswalk_U_B': [15, 3], 'crosswalk_B_U': [10, 2], 'crosswalk_B_B': [10, 2]}
-# [Chance, Amount] of Cars spawned (per second)
-amount_car = {'car_L': [20, 5], 'car_R': [20, 6]}
+# Trafficlight: complete iteration time; green-light-time for cars
+variante_ampeln = True
+light_phase = 40
+car_phase = 25
+
+# Variance of time of the day:
+# [1 = 08:00]
+# [2 = 12:00]
+# [3 = 17:00]
+# [4 = 20:00]
+variante_zeiten = 1
+
 # TIME DISPLAY
 t_s = 0
 t_min = 0
 t_h = 0
+
 # PEDESTRIANS WAITING
 waiting_ped = {'time_t': 0, 'crosswalk_L_L': 0, 'crosswalk_L_R': 0,
                'crosswalk_M_L': 0, 'crosswalk_M_R': 0, 'crosswalk_U_U': 0,
@@ -37,11 +47,46 @@ waiting_ped = {'time_t': 0, 'crosswalk_L_L': 0, 'crosswalk_L_R': 0,
                'cars_L': 0, 'cars_R': 0}
 
 waiting_ped2 = {'time': waiting_ped['time_t'],
-                        'crosswalk_L' : waiting_ped['crosswalk_L_R'] + waiting_ped['crosswalk_L_L'],
-                        'crosswalk_R' : waiting_ped['crosswalk_M_L'] + waiting_ped['crosswalk_M_R'],
-                        'crosswalk_U' : waiting_ped['crosswalk_U_U'] + waiting_ped['crosswalk_U_B'],
-                        'crosswalk_B' : waiting_ped['crosswalk_B_B'] + waiting_ped['crosswalk_B_U'],
-                        'cars_L' : waiting_ped['cars_L'], 'cars_R': waiting_ped['cars_R'] }
+                'crosswalk_L': waiting_ped['crosswalk_L_R'] + waiting_ped['crosswalk_L_L'],
+                'crosswalk_R': waiting_ped['crosswalk_M_L'] + waiting_ped['crosswalk_M_R'],
+                'crosswalk_U': waiting_ped['crosswalk_U_U'] + waiting_ped['crosswalk_U_B'],
+                'crosswalk_B': waiting_ped['crosswalk_B_B'] + waiting_ped['crosswalk_B_U'],
+                'cars_L': waiting_ped['cars_L'], 'cars_R': waiting_ped['cars_R']}
+
+
+""" ---------------------------------------------- FUNCTION DECLARATIONS ---------------------------------------- """
+
+def spawning_frequency(variante_zeiten):
+    if variante_zeiten == 1:
+        # 08:00 [Chance, Amount] of Pedestrians/Cars spawned (per second)
+        amount_ped = {'crosswalk_L_L': [20, 2], 'crosswalk_L_R': [20, 1],
+                      'crosswalk_M_L': [25, 2], 'crosswalk_M_R': [15, 1], 'crosswalk_U_U': [25, 2],
+                      'crosswalk_U_B': [15, 1], 'crosswalk_B_U': [10, 1], 'crosswalk_B_B': [10, 1]}
+        amount_car = {'car_L': [10, 2], 'car_R': [10, 2]}
+
+    if variante_zeiten == 2:
+        # 12:00 [Chance, Amount] of Pedestrians/Cars spawned (per second)
+        amount_ped = {'crosswalk_L_L': [15, 1], 'crosswalk_L_R': [15, 1],
+                      'crosswalk_M_L': [10, 2], 'crosswalk_M_R': [10, 2], 'crosswalk_U_U': [15, 2],
+                      'crosswalk_U_B': [15, 2], 'crosswalk_B_U': [10, 1], 'crosswalk_B_B': [10, 1]}
+        amount_car = {'car_L': [25, 2], 'car_R': [25, 2]}
+
+    if variante_zeiten == 3:
+        # 17:00 [Chance, Amount] of Pedestrians/Cars spawned (per second)
+        amount_ped = {'crosswalk_L_L': [15, 1], 'crosswalk_L_R': [15, 1],
+                      'crosswalk_M_L': [10, 2], 'crosswalk_M_R': [10, 2], 'crosswalk_U_U': [15, 2],
+                      'crosswalk_U_B': [15, 2], 'crosswalk_B_U': [10, 1], 'crosswalk_B_B': [10, 1]}
+        amount_car = {'car_L': [25, 2], 'car_R': [25, 2]}
+
+    if variante_zeiten == 4:
+        # 20:00 [Chance, Amount] of Pedestrians/Cars spawned (per second)
+        amount_ped = {'crosswalk_L_L': [15, 1], 'crosswalk_L_R': [15, 1],
+                      'crosswalk_M_L': [10, 2], 'crosswalk_M_R': [10, 2], 'crosswalk_U_U': [15, 2],
+                      'crosswalk_U_B': [15, 2], 'crosswalk_B_U': [10, 1], 'crosswalk_B_B': [10, 1]}
+        amount_car = {'car_L': [10, 2], 'car_R': [10, 2]}
+
+    return amount_ped, amount_car
+
 
 def schachbrett(canvas):
     for x in range(LENGTH):
@@ -49,16 +94,19 @@ def schachbrett(canvas):
     for y in range(LENGTH):
         canvas.create_line(0, size * y, LENGTH, size * y, fill="#476042")
 
+
 def initialize_gitter():
     # Initialisiert Koordinatenmatrix mit Nullen-Einträgen
     matrix = array(zeros((units, units)), dtype=int)
     return matrix
+
 
 def print_matrix(matrix):
     # K: Funktioniert nur für Matrizen mit Höhe height
     # K: Grenze so anpassen, dass beliebige Matrizen verwendet werden können?
     print("Matrixprinter at time: ", t_display)
     print(matrix)
+
 
 def speed(agent):
     xspeed = 0
@@ -72,6 +120,7 @@ def speed(agent):
     if agent.cordy > agent.endy:
         yspeed = -1
     return xspeed, yspeed
+
 
 def spawn_ped(walkers, i):
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
@@ -108,6 +157,7 @@ def spawn_ped(walkers, i):
         if random.randint(1, 101) <= amount_ped["crosswalk_B_B"][0]:
             walkers.append(Pedestrian("crosswalk_B_B"))
 
+
 def spawn_cars(drivers, i):
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Car(Weg)
@@ -118,6 +168,7 @@ def spawn_cars(drivers, i):
     for k in range(0, amount_car["car_R"][1]):
         if random.randint(1, 101) <= amount_car["car_R"][0]:
             drivers.append(Driver("car_R"))
+
 
 def spawn_tram_raster(tram, str, raster):
     # Spawns the new tram in Raster and on Window
@@ -139,33 +190,38 @@ def spawn_tram_raster(tram, str, raster):
                                         (agent.cordx_last + n * agent.xspeed + 1) * size + 2, (agent.cordy + 1) * size,
                                         fill='blue'))
 
+
 def spawn_tram(tram, i, raster):
     # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
     # S: Tram(Weg)
+    if i != 0:
+        if i % 720 == 0:
+            tram.append(Tram("6_Uni"))
+            spawn_tram_raster(tram, "vertical", raster)
 
-    if i % 120 == 0:
+        if (i + 600) % 720 == 0:
+            tram.append(Tram("6_Polybahn"))
+            spawn_tram_raster(tram, "horizontal", raster)
+
+        if (i + 480) % 720 == 0:
+            tram.append(Tram("9_Uni"))
+            spawn_tram_raster(tram, "vertical", raster)
+
+        if (i + 360) % 720 == 0:
+            tram.append(Tram("9_Haldenbach"))
+            spawn_tram_raster(tram, "vertical", raster)
+
+        if (i + 240) % 720 == 0:
+            tram.append(Tram("10_Haldenbach"))
+            spawn_tram_raster(tram, "vertical", raster)
+
+        if (i + 120) % 720 == 0:
+            tram.append(Tram("10_Polybahn"))
+            spawn_tram_raster(tram, "horizontal", raster)
+    else:
         tram.append(Tram("6_Uni"))
         spawn_tram_raster(tram, "vertical", raster)
 
-    if (i + 100) % 120 == 0:
-        tram.append(Tram("6_Polybahn"))
-        spawn_tram_raster(tram, "horizontal", raster)
-
-    if (i + 80) % 120 == 0:
-        tram.append(Tram("9_Uni"))
-        spawn_tram_raster(tram, "vertical", raster)
-
-    if (i + 60) % 120 == 0:
-        tram.append(Tram("9_Haldenbach"))
-        spawn_tram_raster(tram, "vertical", raster)
-
-    if (i + 40) % 120 == 0:
-        tram.append(Tram("10_Haldenbach"))
-        spawn_tram_raster(tram, "vertical", raster)
-
-    if (i + 20) % 120 == 0:
-        tram.append(Tram("10_Polybahn"))
-        spawn_tram_raster(tram, "horizontal", raster)
 
 def iterate(list, raster):
     # A whole list gets updated => Each agent in that list gets to move (order: from first to last)
@@ -210,6 +266,7 @@ def iterate(list, raster):
             else:
                 iterator += 1
     return False
+
 
 class Pedestrian:
     def __init__(self, path):
@@ -294,6 +351,7 @@ class Pedestrian:
         self.shape = window.create_oval(self.cordx * size + 3, self.cordy * size, self.cordx * size + size + 2,
                                         self.cordy * size + size, fill='green')
 
+
 class Driver:
     def __init__(self, path):
         # K: Initialisierung ggf ergänzen mit Startkoordinaten
@@ -361,6 +419,7 @@ class Driver:
 
         self.shape = window.create_rectangle(self.cordx * size + 3, self.cordy * size, self.cordx * size + size + 2,
                                              self.cordy * size + size, fill='magenta')
+
 
 class Tram:
     def __init__(self, number):
@@ -484,8 +543,8 @@ class Tram:
         # K: Create a list of Tram Waggons; first waggon of tram at tram_list[-1] and last waggon at tram_list[0]
         self.tram_list = []
 
-def rotlicht(number, matrix):
 
+def rotlicht(number, matrix):
     if number == 0:
         matrix[41][33] = 0
         matrix[45][35] = 0
@@ -505,31 +564,32 @@ def rotlicht(number, matrix):
     if number == 1:
         matrix[41][33] = 4
         matrix[45][35] = 4
-        #crosswalk2
+        # crosswalk2
         matrix[41][56] = 4
         matrix[45][58] = 4
-        #crosswalk3
+        # crosswalk3
         matrix[39][62] = 4
         matrix[37][67] = 4
-        #crosswalk4
+        # crosswalk4
         matrix[69][62] = 4
         matrix[67][67] = 4
 
-        #Fussgänger müssen warten
-        #Matrix[x][y] = 3 für alle x,y welche direkt vor dem Fussgängerstreifen liegen aus Fussgänger sicht
+        # Fussgänger müssen warten
+        # Matrix[x][y] = 3 für alle x,y welche direkt vor dem Fussgängerstreifen liegen aus Fussgänger sicht
         return matrix
     if number == 2:
-        #crosswalk1:
+        # crosswalk1:
         matrix[42][36] = 5
-        #crosswalk
+        # crosswalk
         matrix[42][59] = 5
-        #crosswalk3
+        # crosswalk3
         matrix[36][63] = 5
         matrix[40][66] = 5
-        #crosswalk
+        # crosswalk
         matrix[70][66] = 5
         matrix[66][63] = 5
         return matrix
+
 
 def move(agent, matrix):
     # Speichert die momentanen Koordinaten (old) sowie die Zukünftigen(new)
@@ -541,7 +601,7 @@ def move(agent, matrix):
     # Falls die new-Koordinate in der Matrix unbesetzt ist, darf der Agent ein Feld weiter. Ansonsten bleibt er stehen.
     if matrix[ym_new][xn_new] == 0:
         if matrix[ym_old][xn_old] <= 3:
-            #Ampeln dürfen nicht überschrieben werden
+            # Ampeln dürfen nicht überschrieben werden
             matrix[ym_old][xn_old] = 0
         if isinstance(agent, Driver):
             matrix[ym_new][xn_new] = 2
@@ -568,6 +628,7 @@ def move(agent, matrix):
         return True
     else:
         return False
+
 
 def move_tram(agent, matrix):
     # Speichert Tram-Nummer
@@ -620,6 +681,7 @@ def move_tram(agent, matrix):
                                                        (agent.cordy + 1) * size, fill='blue'))
     return False
 
+
 def print_time(s_i, min_i, h_i):
     """
     Updates the current time displayed in the window
@@ -628,19 +690,20 @@ def print_time(s_i, min_i, h_i):
     time_label = Label(window, text="Time elapsed: ")
     time_label.place(x=50, y=50)
     if s_i < 10:
-        s = '0'+str(s_i)
+        s = '0' + str(s_i)
     else:
         s = str(s_i)
     if min_i < 10:
-        minute = '0'+str(min_i)
+        minute = '0' + str(min_i)
     else:
         minute = str(min_i)
     if h_i < 10:
-        h = '0'+str(h_i)
+        h = '0' + str(h_i)
     else:
         h = str(h_i)
     current_time = Label(window, text=(h, ':', minute, ':', s))
     current_time.place(x=145, y=50)
+
 
 def draw_lights(number):
     """
@@ -694,6 +757,7 @@ def draw_lights(number):
         cwp_b_l = Label(window, image=light_ped_r)
         cwp_b_l.place(x=590, y=701)
 
+
 def display_waiters(waiters):
     w_ll = Label(window, text=str(waiters['crosswalk_L_L']))
     w_ll.place(x=330, y=350)
@@ -714,6 +778,7 @@ def display_waiters(waiters):
     w_bu.place(x=710, y=665)
     w_bb = Label(window, text=str(waiters['crosswalk_B_B']))
     w_bb.place(x=565, y=685)
+
 
 def count_cars_waiting(raster, str):
     waiting_cars = 0
@@ -741,6 +806,7 @@ def count_cars_waiting(raster, str):
 
 
 """ ------------------------------------------ Begin "Main function" ------------------------------------------- """
+
 # K: öffnet neues Fenster und initialisiert Koordinatenraster
 tk = Tk()
 window = Canvas(tk, width=LENGTH, height=LENGTH)
@@ -753,6 +819,7 @@ backgr = ImageTk.PhotoImage(img)
 canvas_img = window.create_image(503, 500, image=backgr)
 
 # Variables, Arrays, Matrix for iteration
+amount_ped, amount_car = spawning_frequency(variante_zeiten)
 t_display = 0
 walkers = []
 drivers = []
@@ -773,24 +840,26 @@ with open('values.csv', 'w') as f:
         display_waiters(waiting_ped)
         waiting_ped['time_t'] += 1
         temp_time = waiting_ped['time_t']
+
+        # Zählt Anzahl Autos in der Warteschlange
+        cars_waiting_L_U = count_cars_waiting(raster, "L_U")
+        cars_waiting_L_B = count_cars_waiting(raster, "L_B")
+        cars_waiting_R_U = count_cars_waiting(raster, "R_U")
+        cars_waiting_R_B = count_cars_waiting(raster, "R_B")
+        waiting_ped2 = {'time': waiting_ped['time_t'],
+                'crosswalk_L': waiting_ped['crosswalk_L_R'] + waiting_ped['crosswalk_L_L'],
+                'crosswalk_R': waiting_ped['crosswalk_M_L'] + waiting_ped['crosswalk_M_R'],
+                'crosswalk_U': waiting_ped['crosswalk_U_U'] + waiting_ped['crosswalk_U_B'],
+                'crosswalk_B': waiting_ped['crosswalk_B_B'] + waiting_ped['crosswalk_B_U'],
+                'cars_L': cars_waiting_L_B + cars_waiting_L_U, 'cars_R': cars_waiting_R_B + cars_waiting_R_U}
+        w.writerow(waiting_ped2)
         waiting_ped = {'time_t': temp_time, 'crosswalk_L_L': 0, 'crosswalk_L_R': 0,
                        'crosswalk_M_L': 0, 'crosswalk_M_R': 0, 'crosswalk_U_U': 0,
                        'crosswalk_U_B': 0, 'crosswalk_B_U': 0, 'crosswalk_B_B': 0,
                        'cars_L': 0, 'cars_M': 0, 'cars_U_U': 0, 'cars_U_B': 0,
                        'cars_B_U': 0, 'cars_B_B': 0}
-        
-        w.writerow(waiting_ped2)
-        waiting_ped = {'time_t': temp_time, 'crosswalk_L_L': 0, 'crosswalk_L_R': 0,
-                       'crosswalk_M_L': 0, 'crosswalk_M_R': 0, 'crosswalk_U_U': 0,
-                       'crosswalk_U_B': 0, 'crosswalk_B_U': 0, 'crosswalk_B_B': 0,
-                       'cars_L': 0, 'cars_R': 0}
 
-        #Zählt Anzahl Autos in der Warteschlange
-        cars_waiting_L_U = count_cars_waiting(raster, "L_U")
-        cars_waiting_L_B = count_cars_waiting(raster, "L_B")
-        cars_waiting_R_U = count_cars_waiting(raster, "R_U")
-        cars_waiting_R_B = count_cars_waiting(raster, "R_B")
-        #print("Warteschlange: L_U: " + str(cars_waiting_L_U) + "  L_B: " + str(cars_waiting_L_B) + "  R_U: " +
+        # print("Warteschlange: L_U: " + str(cars_waiting_L_U) + "  L_B: " + str(cars_waiting_L_B) + "  R_U: " +
         #     str(cars_waiting_R_U) + "  R_B: " + str(cars_waiting_R_B))
 
         # Updates Time in display window
@@ -802,72 +871,72 @@ with open('values.csv', 'w') as f:
             t_h += 1
             t_min = 0
         print_time(t_s, t_min, t_h)
-        # Activates / Deactivates Red light
-        if i % 60 == 0:
-            raster = rotlicht(0, raster)
-            raster = rotlicht(1, raster)
-            # Setting traffic lights for when pedestrians have to wait
-            light_ped_b = PhotoImage(file='lights/red_bottom.gif')
-            light_ped_t = PhotoImage(file='lights/red_top.gif')
-            light_ped_r = PhotoImage(file='lights/red_right.gif')
-            light_ped_l = PhotoImage(file='lights/red_left.gif')
-    
-            cwp_l_l = Label(window, image=light_ped_b)
-            cwp_l_l.place(x=310, y=375)
-            cwp_l_r = Label(window, image=light_ped_t)
-            cwp_l_r.place(x=365, y=460)
-            cwp_m_l = Label(window, image=light_ped_b)
-            cwp_m_l.place(x=540, y=375)
-            cwp_m_r = Label(window, image=light_ped_t)
-            cwp_m_r.place(x=595, y=460)
-            cwp_u_r = Label(window, image=light_ped_l)
-            cwp_u_r.place(x=675, y=345)
-            cwp_u_l = Label(window, image=light_ped_r)
-            cwp_u_l.place(x=595, y=401)
-            cwp_b_r = Label(window, image=light_ped_l)
-            cwp_b_r.place(x=675, y=645)
-            cwp_b_l = Label(window, image=light_ped_r)
-            cwp_b_l.place(x=590, y=701)
 
-        if i % 60 == 20:
-            raster = rotlicht(0, raster)
-            raster = rotlicht(2, raster)
-            #setting traffic lights for when pedestrians can walk
-            light_ped_b = PhotoImage(file='lights/green_bottom.gif')
-            light_ped_t = PhotoImage(file='lights/green_top.gif')
-            light_ped_r = PhotoImage(file='lights/green_right.gif')
-            light_ped_l = PhotoImage(file='lights/green_left.gif')
+        if variante_ampeln == True:
+            # Activates / Deactivates Red light
+            if i % light_phase == 0:
+                raster = rotlicht(0, raster)
+                raster = rotlicht(1, raster)
+                # Setting traffic lights for when pedestrians have to wait
+                light_ped_b = PhotoImage(file='lights/red_bottom.gif')
+                light_ped_t = PhotoImage(file='lights/red_top.gif')
+                light_ped_r = PhotoImage(file='lights/red_right.gif')
+                light_ped_l = PhotoImage(file='lights/red_left.gif')
 
-            cwp_l_l = Label(window, image=light_ped_b)
-            cwp_l_l.place(x=310, y=375)
-            cwp_l_r = Label(window, image=light_ped_t)
-            cwp_l_r.place(x=365, y=460)
-            cwp_m_l = Label(window, image=light_ped_b)
-            cwp_m_l.place(x=540, y=375)
-            cwp_m_r = Label(window, image=light_ped_t)
-            cwp_m_r.place(x=595, y=460)
-            cwp_u_r = Label(window, image=light_ped_l)
-            cwp_u_r.place(x=675, y=345)
-            cwp_u_l = Label(window, image=light_ped_r)
-            cwp_u_l.place(x=595, y=401)
-            cwp_b_r = Label(window, image=light_ped_l)
-            cwp_b_r.place(x=675, y=645)
-            cwp_b_l = Label(window, image=light_ped_r)
-            cwp_b_l.place(x=590, y=701)
+                cwp_l_l = Label(window, image=light_ped_b)
+                cwp_l_l.place(x=310, y=375)
+                cwp_l_r = Label(window, image=light_ped_t)
+                cwp_l_r.place(x=365, y=460)
+                cwp_m_l = Label(window, image=light_ped_b)
+                cwp_m_l.place(x=540, y=375)
+                cwp_m_r = Label(window, image=light_ped_t)
+                cwp_m_r.place(x=595, y=460)
+                cwp_u_r = Label(window, image=light_ped_l)
+                cwp_u_r.place(x=675, y=345)
+                cwp_u_l = Label(window, image=light_ped_r)
+                cwp_u_l.place(x=595, y=401)
+                cwp_b_r = Label(window, image=light_ped_l)
+                cwp_b_r.place(x=675, y=645)
+                cwp_b_l = Label(window, image=light_ped_r)
+                cwp_b_l.place(x=590, y=701)
+
+            if i % light_phase == car_phase:
+                raster = rotlicht(0, raster)
+                raster = rotlicht(2, raster)
+                # setting traffic lights for when pedestrians can walk
+                light_ped_b = PhotoImage(file='lights/green_bottom.gif')
+                light_ped_t = PhotoImage(file='lights/green_top.gif')
+                light_ped_r = PhotoImage(file='lights/green_right.gif')
+                light_ped_l = PhotoImage(file='lights/green_left.gif')
+
+                cwp_l_l = Label(window, image=light_ped_b)
+                cwp_l_l.place(x=310, y=375)
+                cwp_l_r = Label(window, image=light_ped_t)
+                cwp_l_r.place(x=365, y=460)
+                cwp_m_l = Label(window, image=light_ped_b)
+                cwp_m_l.place(x=540, y=375)
+                cwp_m_r = Label(window, image=light_ped_t)
+                cwp_m_r.place(x=595, y=460)
+                cwp_u_r = Label(window, image=light_ped_l)
+                cwp_u_r.place(x=675, y=345)
+                cwp_u_l = Label(window, image=light_ped_r)
+                cwp_u_l.place(x=595, y=401)
+                cwp_b_r = Label(window, image=light_ped_l)
+                cwp_b_r.place(x=675, y=645)
+                cwp_b_l = Label(window, image=light_ped_r)
+                cwp_b_l.place(x=590, y=701)
 
         # Iterate all agents for one time period
         iterate(walkers, raster)
         i = 1
         while i <= car_speed:
-            if i % 2: # Trams sind halb so schnell wie autos
+            if i % 2:  # Trams sind halb so schnell wie autos
                 iterate(tram, raster)
             iterate(drivers, raster)
 
             tk.update()
-            time.sleep(animation_speed)
+            if maxspeed == False:
+                time.sleep(animation_speed)
             i += 1
 
-            #print(raster[:, 42])
-
-
-tk.mainloop
+            # print(raster[:, 42])
