@@ -2,7 +2,7 @@
 
 > * Group Name: tea-tan
 > * Group participants names: Nico Burger, Leo Fent, Pascal Lieberherr, Jérôme Landtwing
-> * Project Title: Tannenbar-intersection
+> * Project Title: Implementation of a Traffic Light System at the Tannenbar-Intersection
 > * Programming language: Python
 
 ## General Introduction
@@ -34,7 +34,7 @@ The optimal solution would minimize the combined travel time of our agents.
 This might cause pedestrians having to be a bit more patient, while cars do not end up in a total traffic jam.
 
 ## References					
-Helbing, D. and Schreckenberg, M. (1999). Cellular automata simulating experimental properties of traffic flow. Rapid Communications, 063-651X/99/59(3)/2505(4)	 	 Lämmer, S. and Helbing, D. (2008). Self-control of traffic lights and vehicle flows in urban road networks. J. Stat. Mech. P04019
+Helbing, D. and Schreckenberg, M. (1999). Cellular automata simulating experimental properties of traffic flow. Rapid Communications, 063-651X/99/59(3)/2505(4)	 	 Lämmer, S. and Helbing, D. (2008). Self-control of traffic lights and vehicle flows in urban road networks. J. Stat. Mech. P04019
 
 Similar project: https://github.com/nuhro/Intersection-Problem
 
