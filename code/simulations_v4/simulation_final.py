@@ -56,7 +56,12 @@ waiting_ped2 = {'time': waiting_ped['time_t'],
 
 """ ---------------------------------------------- FUNCTION DECLARATIONS ---------------------------------------- """
 
+
 def spawning_frequency(variante_zeiten):
+    '''
+    defines spawning frequency of cars and pedestrians
+    depending on the day time [Chance, Amount]
+    '''
     if variante_zeiten == 1:
         # 08:00 [Chance, Amount] of Pedestrians/Cars spawned (per second)
         amount_ped = {'crosswalk_L_L': [60, 1], 'crosswalk_L_R': [20, 1],
@@ -89,6 +94,9 @@ def spawning_frequency(variante_zeiten):
 
 
 def schachbrett(canvas):
+    '''
+    creats vertical and horizontal lines in the canvas
+    '''
     for x in range(LENGTH):
         canvas.create_line(size * x, 0, size * x, LENGTH, fill="#476042")
     for y in range(LENGTH):
@@ -96,19 +104,26 @@ def schachbrett(canvas):
 
 
 def initialize_gitter():
-    # Initialisiert Koordinatenmatrix mit Nullen-Einträgen
+    '''
+    Initializes coordinates matrix with zeros
+    '''
     matrix = array(zeros((units, units)), dtype=int)
     return matrix
 
 
 def print_matrix(matrix):
-    # K: Funktioniert nur für Matrizen mit Höhe height
-    # K: Grenze so anpassen, dass beliebige Matrizen verwendet werden können?
+    '''
+    prints matrix
+    '''
     print("Matrixprinter at time: ", t_display)
     print(matrix)
 
 
 def speed(agent):
+    '''
+    sets the speed of the agent according
+    to their position
+    '''
     xspeed = 0
     yspeed = 0
     if agent.cordx < agent.endx:
@@ -123,8 +138,10 @@ def speed(agent):
 
 
 def spawn_ped(walkers, i):
-    # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
-    # S: Pedestrian(Weg)
+    '''
+    spawns pedestrians according to the defined amount and
+    chance in the function spawning frequency
+    '''
     for k in range(0, amount_ped["crosswalk_L_L"][1]):
         if random.randint(1, 101) <= amount_ped["crosswalk_L_L"][0]:
             walkers.append(Pedestrian("crosswalk_L_L"))
@@ -159,8 +176,10 @@ def spawn_ped(walkers, i):
 
 
 def spawn_cars(drivers, i):
-    # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
-    # S: Car(Weg)
+    '''
+    spawns pedestrians according to the defined amount and
+    chance in the function spawning frequency
+    '''
     for k in range(0, amount_car["car_L"][1]):
         if random.randint(1, 101) <= amount_car["car_L"][0]:
             drivers.append(Driver("car_L"))
@@ -171,7 +190,9 @@ def spawn_cars(drivers, i):
 
 
 def spawn_tram_raster(tram, str, raster):
-    # Spawns the new tram in Raster and on Window
+    '''
+    Spawns the new tram in raster and on window
+    '''
     agent = tram[-1]
     if str == 'vertical':
         for n in range(0, tram_length):
@@ -192,8 +213,9 @@ def spawn_tram_raster(tram, str, raster):
 
 
 def spawn_tram(tram, i, raster):
-    # K: Start- und Endkoordinaten gemäss entsprechenden Agent-Quellen
-    # S: Tram(Weg)
+    '''
+    spawns trams according to their schedule
+    '''
     if i != 0:
         if i % 720 == 0:
             tram.append(Tram("6_Uni"))
@@ -224,8 +246,10 @@ def spawn_tram(tram, i, raster):
 
 
 def iterate(list, raster):
-    # A whole list gets updated => Each agent in that list gets to move (order: from first to last)
-    # Returns if list is empty or not (True:= Empty)
+    '''
+    A whole list gets updated => Each agent in that list gets to move (order: from first to last)
+    Returns if list is empty or not (True:= Empty)
+    '''
     entities = len(list)
     iterator = 0
 
@@ -545,6 +569,10 @@ class Tram:
 
 
 def rotlicht(number, matrix):
+    '''
+    function locks the proper entries in the matrix. Hence, the agents cannot go
+    on that field
+    '''
     if number == 0:
         matrix[41][33] = 0
         matrix[45][35] = 0
@@ -592,7 +620,9 @@ def rotlicht(number, matrix):
 
 
 def move(agent, matrix):
-    # Speichert die momentanen Koordinaten (old) sowie die Zukünftigen(new)
+    '''
+    Speichert die momentanen Koordinaten (old) sowie die Zukünftigen(new)
+    '''
     xn_old = agent.cordx
     xn_new = agent.cordx + agent.xspeed
     ym_old = agent.cordy
@@ -631,6 +661,9 @@ def move(agent, matrix):
 
 
 def move_tram(agent, matrix):
+    '''
+    moves tram
+    '''
     # Speichert Tram-Nummer
     number = agent.number
 
@@ -759,6 +792,9 @@ def draw_lights(number):
 
 
 def display_waiters(waiters):
+    '''
+    displays the number of waiters during the simulation
+    '''
     w_ll = Label(window, text=str(waiters['crosswalk_L_L']))
     w_ll.place(x=330, y=350)
     w_lr = Label(window, text=str(waiters['crosswalk_L_R']))
@@ -781,6 +817,9 @@ def display_waiters(waiters):
 
 
 def count_cars_waiting(raster, str):
+    '''
+    counts the number of waiting cars
+    '''
     waiting_cars = 0
     if str == 'L_U':
         i = 35
