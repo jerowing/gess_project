@@ -26,8 +26,8 @@ car_phase = 25
 
 # SPEED OF ANIMATION:
 animation_speed = 0.05
-maxspeed = True     # sets the simulation to run at full speed
-
+# sets the simulation to run at full speed (recommended only and if only you are not intressted in the datasheet)
+maxspeed = False
 # --------------------------------------------------------------
 
 # Height/Width of window:
@@ -104,7 +104,7 @@ def spawning_frequency(variante_zeiten):
 
 def schachbrett(canvas):
     '''
-    creats vertical and horizontal lines in the canvas
+    creates vertical and horizontal lines in the canvas
     '''
     for x in range(LENGTH):
         canvas.create_line(size * x, 0, size * x, LENGTH, fill="#476042")
@@ -179,7 +179,7 @@ def spawn_ped(walkers, i):
         if random.randint(1, 101) <= amount_ped["crosswalk_B_U"][0]:
             walkers.append(Pedestrian("crosswalk_B_U"))
 
-    for k in range(0, amount_ped["crosswalk_B_B"][1]):
+    for k in range(0, amount_ped["crosswalk_B_ = 12:00] SITUATION 2B"][1]):
         if random.randint(1, 101) <= amount_ped["crosswalk_B_B"][0]:
             walkers.append(Pedestrian("crosswalk_B_B"))
 
@@ -281,7 +281,7 @@ def iterate(list, raster):
                     for i in range(0, tram_length):
                         raster[agent.cordy_last][agent.cordx_last + i * agent.xspeed_last] = 0
                         window.delete(agent.tram_list[i])
-                del (list[iterator])
+                del (list[iterator]) = 12:00] SITUATION 2
                 entities -= 1
             else:
                 iterator += 1
@@ -303,8 +303,6 @@ def iterate(list, raster):
 
 class Pedestrian:
     def __init__(self, path):
-        # K: Initialisiert ein Objekt der Klasse
-
         # Variable declaration for Crosswalks
         #    crosswalk_L_L  very left crosswalk (see map) and left lane
         #    crosswalk_L_R  very left crosswalk / right lane
@@ -315,7 +313,7 @@ class Pedestrian:
         #    crosswalk_B_U  bottom crosswalk / upper lane
         #    crosswalk_B_B  bottom crosswalk / bottom lane
 
-        # K: Dictionary für x-Startkoordinate des Fussgängers
+        # Dictionary that stores x-coordinatess of the starting position for the pedestrians
         self.startposx = {
             'crosswalk_L_L': 33,
             'crosswalk_L_R': 35,
@@ -329,10 +327,10 @@ class Pedestrian:
 
         self.class_ = "Pedestrian"
 
-        # K: Stores Path of Pedestrian
+        # Stores Path of Pedestrian
         self.path = path
 
-        # K: Dictionary für y-Startkoordinate des Fussgängers
+        # Dictionary that stores y-coordinatess of the starting position for the pedestrians
         self.startposy = {
             'crosswalk_L_L': 38,
             'crosswalk_L_R': 48,
@@ -344,7 +342,7 @@ class Pedestrian:
             'crosswalk_B_B': 69
         }
 
-        # K: Dictionary für x-Endkoordinate des Fussgängers
+        # Dictionary that stores x-coordinatess of the end position for the pedestrians
         self.endposx = {
             'crosswalk_L_L': 33,
             'crosswalk_L_R': 35,
@@ -356,7 +354,7 @@ class Pedestrian:
             'crosswalk_B_B': 69
         }
 
-        # K: Dictionary für y-Endkoordinate des Fussgängers
+        # Dictionary that stores y-coordinatess of the end position for the pedestrians
         self.endposy = {
             'crosswalk_L_L': 48,
             'crosswalk_L_R': 38,
@@ -368,17 +366,17 @@ class Pedestrian:
             'crosswalk_B_B': 69
         }
 
-        # K: Start und Endpunkt wird zugeordnet, indem im entsprechenden dicionary der Wert ausgelesen wird
+        # Matching of start- and endposition.
         self.startx = self.startposx[path]
         self.starty = self.startposy[path]
         self.endx = self.endposx[path]
         self.endy = self.endposy[path]
 
-        # K: Position of Agent
+        # Position of Agent
         self.cordx = self.startx
         self.cordy = self.starty
 
-        # K: Determine Direction/Speed of agent
+        # Determine Direction/Speed of agent
         self.xspeed, self.yspeed = speed(self)
 
         self.shape = window.create_oval(self.cordx * size + 3, self.cordy * size, self.cordx * size + size + 2,
@@ -387,9 +385,6 @@ class Pedestrian:
 
 class Driver:
     def __init__(self, path):
-        # K: Initialisierung ggf ergänzen mit Startkoordinaten
-        # K: Initialisiert ein Objekt der Klasse
-
         # Variable declaration:
         #    car_L car      driving on the left lane -> upwards
         #    car_R car      driving on the right lane -> downwards
@@ -397,13 +392,13 @@ class Driver:
 
         self.class_ = 'Driver'
 
-        # K: Dictionary für X-STARTkoordinate des Cars
+        # Dictionary containing x-startcoorindates for instances of DRIVER
         self.startposx = {
             'car_L': 63,
             'car_R': 66,
         }
 
-        # K: Dictionary für Y-STARTkoordinate des Cars
+        # Dictionary containing y-startcoordinates for instances of DRIVER
         self.startposy = {
             'car_L': 0,
             'car_R': 99,
@@ -419,21 +414,19 @@ class Driver:
             'car_R': 42,
         }
 
-        # K: Dictionary für X-ENDkoordinate des Cars
+        # Dictionary containing x-endcoordinates for instances of DRIVER
         self.endposx = {
             'car_L': 63,
             'car_R': 66,
         }
 
-        # K: Dictionary für Y-ENDkoordinate des Cars
+        # Dictionary containing y-endcoordinates for instances of DRIVER
         self.endposy = {
             'car_L': 99,
             'car_R': 0,
         }
 
         self.path = path
-
-        # K: Start und Endpunkt
         self.startx = self.startposx[path]
         self.starty = self.startposy[path]
         if random.randint(0, 30) == 5:
@@ -443,11 +436,11 @@ class Driver:
             self.endx = self.endposx[path]
             self.endy = self.endposy[path]
 
-        # K: Position of Agent
+        # Position of Agent
         self.cordx = self.startx
         self.cordy = self.starty
 
-        # K: Determine Direction/Speed of agent
+        # Determine Direction/Speed of agent
         self.xspeed, self.yspeed = speed(self)
 
         self.shape = window.create_rectangle(self.cordx * size + 3, self.cordy * size, self.cordx * size + size + 2,
@@ -456,15 +449,13 @@ class Driver:
 
 class Tram:
     def __init__(self, number):
-        # K: Initialisierung ggf ergänzen mit Startkoordinaten
-        # K: Initialisiert ein Objekt der Klasse
 
         # Variable declaration:
         # The following trams stop at Eth/Universitätsspital:
         # 6, 9, 10
         # They either drive in the direction of 1. Polybahn, 2. Haldenbach or 3. Uni (Universität Zürich)
 
-        # K: Dictionary für X-STARTkoordinate des Trams
+        # Dictionary containing x-startcoorindates for Trams
         self.startposx = {
             '6_Uni': 65,
             '6_Polybahn': tram_length - 1,
@@ -476,7 +467,7 @@ class Tram:
 
         self.class_ = "Tram"
 
-        # K: Dictionary für Y-STARTkoordinate des Trams
+        # Dictionary containing y-startcoorindates for Trams
         self.startposy = {
             '6_Uni': 99 - tram_length + 1,
             '6_Polybahn': 44,
@@ -486,7 +477,7 @@ class Tram:
             '10_Polybahn': 44,
         }
 
-        # K: Dictionary für X-STARTkoordinate des letzten Tramwaggons
+        # Dictionary containing x-endcoordinates for Trams
         self.startposx_end = {
             '6_Uni': 65,
             '6_Polybahn': 0,
@@ -496,7 +487,7 @@ class Tram:
             '10_Polybahn': 0,
         }
 
-        # K: Dictionary für Y-ENDkoordinate des letzten Tramwaggons
+        # Dictionary containing y-endcoordinates for Trams
         self.startposy_end = {
             '6_Uni': 99,
             '6_Polybahn': 44,
@@ -506,7 +497,7 @@ class Tram:
             '10_Polybahn': 44,
         }
 
-        # K: Dictionary für X-Middlekoordinate des Trams
+        # Dictionary containing middle-x-coordinates for Trams
         self.middleposx = {
             '6_Uni': 65,
             '6_Polybahn': 64,
@@ -516,7 +507,7 @@ class Tram:
             '10_Polybahn': 65,
         }
 
-        # K: Dictionary für Y-Middlekoordinate des Cars
+        # Dictionary containing middle-y-coordinates for Trams
         self.middleposy = {
             '6_Uni': 43,
             '6_Polybahn': 44,
@@ -526,7 +517,7 @@ class Tram:
             '10_Polybahn': 44,
         }
 
-        # K: Dictionary für X-ENDkoordinate des Trams
+        # Dictionary containing x-endcoordinates for Trams
         self.endposx = {
             '6_Uni': 0,
             '6_Polybahn': 64,
@@ -536,7 +527,7 @@ class Tram:
             '10_Polybahn': 65,
         }
 
-        # K: Dictionary für Y-ENDkoordinate des Trams
+        # Dictionary containing y-endcoordinates for Trams
         self.endposy = {
             '6_Uni': 43,
             '6_Polybahn': 99,
@@ -549,7 +540,7 @@ class Tram:
         # Saves agents number
         self.number = number
 
-        # K: Start und Endpunkt wird zugeordnet, indem im entsprechenden dicionary der Wert ausgelesen wird
+        # Matching of start and end positions for Trams
         self.startx = self.startposx[number]
         self.starty = self.startposy[number]
         self.startx_end = self.startposx_end[number]
@@ -562,18 +553,18 @@ class Tram:
             self.endx = self.middleposx[number]
             self.endy = self.middleposy[number]
 
-        # K: Position of Agent
+        # Position of Agent
         self.cordx = self.startx
         self.cordy = self.starty
         self.cordx_last = self.startx_end
         self.cordy_last = self.starty_end
 
-        # K: Determine Direction/Speed of agent
+        # Determine Direction/Speed of agent
         self.xspeed, self.yspeed = speed(self)
         self.xspeed_last = self.xspeed
         self.yspeed_last = self.yspeed
 
-        # K: Create a list of Tram Waggons; first waggon of tram at tram_list[-1] and last waggon at tram_list[0]
+        # Create a list of Tram Waggons; first waggon of tram at tram_list[-1] and last waggon at tram_list[0]
         self.tram_list = []
 
 
@@ -599,6 +590,8 @@ def rotlicht(number, matrix):
         matrix[66][63] = 0
         return matrix
     if number == 1:
+        # Pedestrians are not allowed to pass crosswalks.
+        # Matrix[x][y] = 4 for all coordinates right in front of a crosswalk. => Artificial obstacle that blocks their way
         matrix[41][33] = 4
         matrix[45][35] = 4
         # crosswalk2
@@ -610,11 +603,9 @@ def rotlicht(number, matrix):
         # crosswalk4
         matrix[69][62] = 4
         matrix[67][67] = 4
-
-        # Fussgänger müssen warten
-        # Matrix[x][y] = 3 für alle x,y welche direkt vor dem Fussgängerstreifen liegen aus Fussgänger sicht
         return matrix
     if number == 2:
+        # Cars must wait in front of crosswalks
         # crosswalk1:
         matrix[42][36] = 5
         # crosswalk
@@ -630,17 +621,17 @@ def rotlicht(number, matrix):
 
 def move(agent, matrix):
     '''
-    Speichert die momentanen Koordinaten (old) sowie die Zukünftigen(new)
+    Saves the current coordinates (old) and the future ones (new)
     '''
     xn_old = agent.cordx
     xn_new = agent.cordx + agent.xspeed
     ym_old = agent.cordy
     ym_new = agent.cordy + agent.yspeed
 
-    # Falls die new-Koordinate in der Matrix unbesetzt ist, darf der Agent ein Feld weiter. Ansonsten bleibt er stehen.
+
     if matrix[ym_new][xn_new] == 0:
+        #valid move.
         if matrix[ym_old][xn_old] <= 3:
-            # Ampeln dürfen nicht überschrieben werden
             matrix[ym_old][xn_old] = 0
         if isinstance(agent, Driver):
             matrix[ym_new][xn_new] = 2
@@ -673,7 +664,6 @@ def move_tram(agent, matrix):
     '''
     moves tram
     '''
-    # Speichert Tram-Nummer
     number = agent.number
 
     # Returns True if Agent is at endposition & Changes speed if FIRST WAGGON is at the middleposition
@@ -685,7 +675,6 @@ def move_tram(agent, matrix):
         else:
             return True
 
-    # Speichert die momentanen Koordinaten (old) sowie die Zukünftigen(new)
     xn_last = agent.cordx_last
     xn_new = agent.cordx + agent.xspeed
     ym_last = agent.cordy_last
@@ -708,8 +697,8 @@ def move_tram(agent, matrix):
         agent.xspeed_last = xspeed
         agent.yspeed_last = yspeed
 
-    # Falls die new-Koordinate in der Matrix unbesetzt ist, darf der Agent ein Feld weiter. Ansonsten bleibt er stehen.
     if matrix[ym_new][xn_new] == 0:
+        #valid move
         matrix[ym_last][xn_last] = 0
         matrix[ym_new][xn_new] = 3
         agent.cordx = xn_new
@@ -853,9 +842,7 @@ def count_cars_waiting(raster, str):
     return waiting_cars
 
 
-""" ------------------------------------------ Begin "Main function" ------------------------------------------- """
-
-# K: öffnet neues Fenster und initialisiert Koordinatenraster
+""" ------------------------------------------ Main function ------------------------------------------- """
 tk = Tk()
 window = Canvas(tk, width=LENGTH, height=LENGTH)
 schachbrett(window)
@@ -889,7 +876,7 @@ with open('values.csv', 'w') as f:
         waiting_ped['time_t'] += 1
         temp_time = waiting_ped['time_t']
 
-        # Zählt Anzahl Autos in der Warteschlange
+        # counts cars queing up in front of a redlight
         cars_waiting_L_U = count_cars_waiting(raster, "L_U")
         cars_waiting_L_B = count_cars_waiting(raster, "L_B")
         cars_waiting_R_U = count_cars_waiting(raster, "R_U")
@@ -907,10 +894,7 @@ with open('values.csv', 'w') as f:
                        'cars_L': 0, 'cars_M': 0, 'cars_U_U': 0, 'cars_U_B': 0,
                        'cars_B_U': 0, 'cars_B_B': 0}
 
-        # print("Warteschlange: L_U: " + str(cars_waiting_L_U) + "  L_B: " + str(cars_waiting_L_B) + "  R_U: " +
-        #     str(cars_waiting_R_U) + "  R_B: " + str(cars_waiting_R_B))
 
-        # Updates Time in display window
         t_s += 1
         if t_s >= 60:
             t_min += 1
@@ -978,7 +962,7 @@ with open('values.csv', 'w') as f:
         iterate(walkers, raster)
         i = 1
         while i <= car_speed:
-            if i % 2:  # Trams sind halb so schnell wie autos
+            if i % 2:
                 iterate(tram, raster)
             iterate(drivers, raster)
 
@@ -986,7 +970,5 @@ with open('values.csv', 'w') as f:
             if maxspeed == False:
                 time.sleep(animation_speed)
             i += 1
-
-            # print(raster[:, 42])
 
 tk.mainlooptk.mainloop
