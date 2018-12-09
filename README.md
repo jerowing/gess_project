@@ -62,14 +62,14 @@ The different scenarios of our simulations can be changed in code lines 18, 23, 
 Set the parameter variante_zeiten = 2 (Line 18)
 Set the parameter variante_ampeln = False (Line 22)
 
-Run the simulation for a first time and obey what happens.
+Run the simulation for a first time and observe what happens.
 
 Now set the following parameters: 
 variante_ampeln = True (Line 22)
 light_phase = 40 (Line 23)
 car_phase = 25 (Line 24)
 
-Run the simulation for a second time and obey again.
+Run the simulation for a second time and observe again.
 
 According to our results there shouldn't appear any congestions that don't solve up by itself. The amount of pedestrians waiting should be small. In the second run one can obey that the amount of waiting pedestrians increases steadily.
 
