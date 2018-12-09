@@ -179,7 +179,7 @@ def spawn_ped(walkers, i):
         if random.randint(1, 101) <= amount_ped["crosswalk_B_U"][0]:
             walkers.append(Pedestrian("crosswalk_B_U"))
 
-    for k in range(0, amount_ped["crosswalk_B_ = 12:00] SITUATION 2B"][1]):
+    for k in range(0, amount_ped["crosswalk_B_B"][1]):
         if random.randint(1, 101) <= amount_ped["crosswalk_B_B"][0]:
             walkers.append(Pedestrian("crosswalk_B_B"))
 
@@ -281,7 +281,7 @@ def iterate(list, raster):
                     for i in range(0, tram_length):
                         raster[agent.cordy_last][agent.cordx_last + i * agent.xspeed_last] = 0
                         window.delete(agent.tram_list[i])
-                del (list[iterator]) = 12:00] SITUATION 2
+                del (list[iterator])
                 entities -= 1
             else:
                 iterator += 1
