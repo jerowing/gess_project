@@ -1,11 +1,3 @@
 # Code Folder 
 
-Your code goes here. You could also replace the content of this file with something more meaningful
-
-Notation für Kommentare im Code:
-#K: Kommentar
-#S: wichtigste Syntax beschrieben für andere Benutzer
-#?: Frage an die anderen
-#To Do: Baustelle
-
-ToDo: Funktionen für Zusammenstosse bzw. um Objekte an Ziel zu lenken implementieren.
+This is our code folder. When running the python script, make sure that you DO NOT CHANGE THE FOLDER STRUCTURE. Otherwise, the script will not find the images it needs to import.

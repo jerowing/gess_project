@@ -1,3 +1,3 @@
 # Presentation Folder 
 
-Add your presentation here...but first finish the code and the report!
+In this folder our presentation slides can be found. They are to be uploaded in time before the oral presentation.

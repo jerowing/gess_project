@@ -1,3 +1,4 @@
 # Other Files Folder
 
-Anything else, such as datasets, reading, tutorials, etc goes here
+In the "Data" folder is the data we collected from our simulations.
+In the "Diagrams" folder are the graphs produced from above data.
