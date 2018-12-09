@@ -71,7 +71,7 @@ car_phase = 25 (Line 24)
 
 Run the simulation for a second time and observe again.
 
-According to our results there shouldn't appear any congestions that don't solve up by itself. The amount of pedestrians waiting should be small. In the second run one can obey that the amount of waiting pedestrians increases steadily.
+According to our results there shouldn't appear any congestions that don't solve up by itself. The amount of pedestrians waiting should be small. In the second run one can observe that the amount of waiting pedestrians increases steadily.
 
 
 **Full Test instructions**:
