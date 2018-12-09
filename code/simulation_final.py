@@ -8,25 +8,7 @@ import csv
 
 """ ---------------------------------------------- GLOBAL VARIABLES --------------------------------------------- """
 
-# Height/Width of window:
-LENGTH = 1000
-# Squares horizontally/vertically:
-units = 100
-# Sidelength of squares:
-size = LENGTH / units
-# SPEED OF ANIMATION:
-animation_speed = 0.05
-maxspeed = True
-
-# SPEED OF CARS is "car_speed" times as fast as a pedestrian:
-car_speed = 6
-# LENGTH OF TRAM
-tram_length = 8
-
-# Trafficlight: complete iteration time; green-light-time for cars [V15: =15, V20: = 20, V25: 25]
-variante_ampeln = True
-light_phase = 40
-car_phase = 25
+# For testing, change the following variables: ---------------
 
 # Variance of time of the day:
 # [1 = 08:00] SITUATION 1
@@ -34,6 +16,33 @@ car_phase = 25
 # [3 = 17:00] SITUATION 3
 # [4 = 20:00] SITUATION 4
 variante_zeiten = 2
+
+
+# Trafficlight: complete iteration time; green-light-time for cars [V15: =15, V20: = 20, V25: 25]
+variante_ampeln = True
+light_phase = 40
+car_phase = 25
+
+
+# SPEED OF ANIMATION:
+animation_speed = 0.05
+maxspeed = True     # sets the simulation to run at full speed
+
+# --------------------------------------------------------------
+
+# Height/Width of window:
+LENGTH = 1000
+# Squares horizontally/vertically:
+units = 100
+# Sidelength of squares:
+size = LENGTH / units
+
+
+# SPEED OF CARS is "car_speed" times as fast as a pedestrian:
+car_speed = 6
+# LENGTH OF TRAM
+tram_length = 8
+
 
 # TIME DISPLAY
 t_s = 0
